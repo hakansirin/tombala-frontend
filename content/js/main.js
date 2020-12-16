@@ -450,7 +450,7 @@ V = {
         moveBack: function () {
             $("#loader_form").addClass("show"); //Loading
             $("#go-back").click(function () {
-                V.ajaxRequest(V.bingo.cancelMove, 'DELETE')
+                V.ajaxRequest(V.cancelMove, 'DELETE')
                     .then((response) => {
                         $(".wrap .count").empty();
                         $(".wrap .name").empty();
