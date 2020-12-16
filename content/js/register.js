@@ -216,7 +216,7 @@ V = {
         checkValidateUrl:function (key) {
             
             if(V.register.getValidateKey(key).length == 36){
-                V.ajaxRequest(url + V.validateUrl + V.register.getValidateKey(key),"GET",true)
+                V.ajaxRequest(url + V.validateUrl + V.register.getValidateKey(key) + "/","GET",true)
                 .then((response) => {
                     console.log("success")
                     console.log(response)
