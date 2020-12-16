@@ -85,7 +85,8 @@ body#register{
 }
 
 .btn-main{
-    width: 90%;
+    margin:0 auto;
+    width:75%;
     display: block;
     border-radius: 15.5px;
     padding:10px 30px;
@@ -668,7 +669,6 @@ select {
     height:75vh;
     overflow-y: auto;
     overflow-x: hidden;
-    display:none;
 }
 
     .winner-card .t-card table {
@@ -728,12 +728,6 @@ select {
         background-color: #cd003c;
     }
     /* Color */
-
-    #close-winner-card{
-
-        display:none;
-    }
-
 
     .t-card{
         background:#fff;
@@ -835,7 +829,73 @@ select {
 }
 #isaretle{
     display: block;
-    margin:0 auto;
-    margin-right: 15px;
 }
 
+#login .btn-main{
+    margin: 0 auto;
+    width: 55%;
+}
+
+.error-text{
+    position: absolute;
+    margin-top:15%;
+    font-size: 28px;
+    color: #CC3300;
+    -webkit-text-stroke: 1px #000;
+}
+
+#login .form-sec{
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    height: 100%;
+}
+#login .form-sec .text{
+    text-align: center;
+    font-size:22px;
+}
+
+#quit{
+    position: absolute;
+    top: 70vh;
+    left: 0;
+    right: 0;
+}
+
+.error-login{
+    text-align:center;
+    color:#CC3300;
+    font-size:18px;
+}
+
+#register .winner-card{
+    height:unset;
+    display: unset;
+}
+
+.form-or-name .text{
+    text-align: center;
+    font-size:26px;
+}
+
+.form-or-name .text span{ 
+    font-size:30px;
+    color:#ffdc00;
+}
+
+.blur-non-click{
+    filter:blur(50%);
+    -webkit-filter:blur(50%);
+    cursor:not-allowed;
+    pointer-events: none;
+}
+
+.admin-screen{
+    display:none;
+}
+.card-screen{
+    display:none;
+}
+#yonetim,#turn-game{
+    margin-top:15px;
+}

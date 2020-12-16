@@ -6,22 +6,22 @@
     <meta charset="utf-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <!-- <link rel="apple-touch-icon" sizes="57x57" href="/content/images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/content/images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/content/images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/content/images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/content/images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/content/images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/content/images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/content/images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/content/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/content/images/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/content/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/content/images/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/content/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/content/images/favicon/manifest.json">
+    <!-- <link rel="apple-touch-icon" sizes="57x57" href="content/images/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="content/images/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="content/images/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="content/images/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="content/images/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="content/images/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="content/images/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="content/images/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="content/images/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="content/images/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="content/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="content/images/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="content/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="content/images/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/content/images/favicon/ms-icon-144x144.png">
+    <meta name="msapplication-TileImage" content="content/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff"> -->
 
     <!-- Custom Font CSS -->
@@ -44,12 +44,14 @@
     <link rel="stylesheet" href="content/css/style.css">
     <!-- Responsive Media Query CSS -->
     <link rel="stylesheet" href="content/css/responsive.css">
+
+    <title>Şirket Tombalası</title>
 </head>
 
 <body style="height: 100vh;">
     <div class="sirket-logo">
         <div class="logo">
-            <img src="/content/images/logo/rhino.svg" alt="">
+            <img src="content/images/logo/rhino.svg" alt="">
         </div>
     </div>
     <section id="sec1" class="cekilen-rakamlar">
@@ -57,14 +59,26 @@
             <div class="row justify-content-center">
                 <div class="col-md-9">
                     <div class="row justify-content-center logos-buttons">
-                        <div class="col-md-12">
+                        <div class="col-md-2">
+
+                        </div>
+                        <div class="col-md-8">
                             <div class="logo">
-                                <img src="/content/images/logo/main.svg" alt="">
+                                <img src="content/images/logo/main.svg" alt="">
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <a id="close-winner-card" class="btn-main">Geri Dön</a>
-                            <a id="go-back" class="btn-main">Geri Al</a>
+
+                            <div class="game-screen">
+                                <a id="yonetim" class="btn-main">Yönetim Paneli</a>
+                            </div>
+                            <div class="admin-screen">
+                                <a id="turn-game" class="btn-main">Oyuna Dön</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+
                         </div>
                         <div class="col-md-8">
                             <div class="text">
@@ -72,38 +86,82 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <a id="isaretle" class="btn-main">İşaretle</a>
                         </div>
                     </div>
                     <div class="row justify-content-center">
-                        <div class="col-md-2">
-                            <div class="last-number">
-                                <div class="title">Son Çekilen Rakamlar</div>
 
-<div class="nums">
-    <div class="number0 num">-</div>
-    <div class="number1 num">-</div>
-    <div class="number2 num">-</div>
-</div>
-                             
+
+
+
+                        <div class="col-md-2">
+                            <div class="admin-screen">
+
+                            </div>
+
+                            <div class="game-screen">
+                                <a id="go-back" class="btn-main">Geri Al</a>
+                                <div class="last-number">
+                                    <div class="title">Son Çekilen Rakamlar</div>
+
+                                    <div class="nums">
+                                        <div class="number0 num">-</div>
+                                        <div class="number1 num">-</div>
+                                        <div class="number2 num">-</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-screen">
+                                <a id="close-winner-card" class="btn-main">Geri Dön</a>
+                                <div class="last-number">
+                                    <div class="title">Son Çekilen Rakamlar</div>
+
+                                    <div class="nums">
+                                        <div class="number0 num">-</div>
+                                        <div class="number1 num">-</div>
+                                        <div class="number2 num">-</div>
+                                    </div>
+                                </div>
+
+
+
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <div class="winner-card">
+
+                            <div class="card-screen">
+                                <div class="winner-card">
 
 
-                            </div>
-                            <div id="post-picked-numbers">
-
-
-                                <div class="number-select" id="number-select">
-                                    <!-- main.js -->
                                 </div>
-
                             </div>
+
+                            <div class="game-screen">
+                                <div id="post-picked-numbers">
+
+
+                                    <div class="number-select" id="number-select">
+                                        <!-- main.js -->
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="admin-screen">
+                                <div id="admin-panel" style="text-align: center;margin-top:150px;">
+                                    Admin Panel Yapım Aşamasında!
+                                </div>
+                            </div>
+
                         </div>
                         <div class="col-md-2 p-0">
-                            
+                            <div class="game-screen">
+                                <a id="isaretle" class="btn-main">İşaretle</a>
+                            </div>
+                            <div class="admin-screen">
+                                <a class="btn-main" id="quit">Oturumu Kapat</a>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -261,8 +319,11 @@
 
 
 
-    <div id="loader_form">
-        <div data-loader="circle-side-2"> <img src="/content/images/logo/rhino-circle.png" alt=""> </div>
+    <div id="loader_form" class="show">
+        <div data-loader="circle-side-2">
+            <img src="content/images/logo/rhino-circle.png" alt="">
+        </div>
+        <div class="error-text"></div>
     </div>
     <!-- /loader_form -->
 
