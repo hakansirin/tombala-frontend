@@ -899,3 +899,22 @@ select {
 #yonetim,#turn-game{
     margin-top:15px;
 }
+
+.person-delete a{
+    width: 40%;
+}
+
+#person-delete:hover{
+    background:tomato;
+    color:#000;
+}
+
+#download-pdf:hover{
+    cursor:pointer;
+    color:#000;
+}
+
+#reset-game{
+    margin-top:35px;
+    width:40%;
+}
