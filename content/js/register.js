@@ -108,18 +108,18 @@ V = {
                 getName = $("input#name").val();
                 getSurname = $("input#surname").val();
 
-                if (getEmail.includes != "@" || getEmail.length == 0) {
-                    $("label#email").html("Lütfen Uygun bir E-Posta Adresi Giriniz!");
-                    $("label#email").css("color", "red");
-                }
-                if (getName.length <= 2) {
-                    $("label#name").html("Gerçek bir isim giriniz!");
-                    $("label#name").css("color", "red");
-                }
-                if (getSurname.length <= 1) {
-                    $("label#surname").html("Gerçek bir Soyisim giriniz!");
-                    $("label#surname").css("color", "red");
-                } else {
+                // if (getEmail.includes != "@" || getEmail.length == 0) {
+                //     $("label#email").html("Lütfen Uygun bir E-Posta Adresi Giriniz!");
+                //     $("label#email").css("color", "red");
+                // }
+                // if (getName.length <= 2) {
+                //     $("label#name").html("Gerçek bir isim giriniz!");
+                //     $("label#name").css("color", "red");
+                // }
+                // if (getSurname.length <= 1) {
+                //     $("label#surname").html("Gerçek bir Soyisim giriniz!");
+                //     $("label#surname").css("color", "red");
+                // } 
 
                     console.log(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
 
@@ -127,7 +127,6 @@ V = {
                     V.register.newGamer(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
 
 
-                }
             });
         },
 
