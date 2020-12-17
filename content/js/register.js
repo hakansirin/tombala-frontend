@@ -246,7 +246,7 @@ V = {
                             $("#register .button-wrap").addClass("d-none");
                             $(".card-wrap").html(V.bingo.createCard(response.id, "red"));
 
-                            $(".form-or-name .text").html("Merhaba <span>" + response.gamer.name + " " + response.gamer.surname + "</span> kartını indirmek için <a id="+ "download-pdf" +">buraya tıkla</a>")
+                            $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id="+ "download-pdf" +"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
 
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A");
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B");
