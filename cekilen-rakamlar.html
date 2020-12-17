@@ -49,18 +49,18 @@
 </head>
 
 <body style="height: 100vh;">
-    <div class="sirket-logo">
-        <div class="logo">
-            <img src="content/images/logo/rhino.svg" alt="">
-        </div>
-    </div>
+   
     <section id="sec1" class="cekilen-rakamlar">
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-md-9">
                     <div class="row justify-content-center logos-buttons">
                         <div class="col-md-2">
-
+                            <div class="sirket-logo">
+                                <div class="logo">
+                                    <img id="companyLogo" src="content/images/logo/rhino.svg" alt="">
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-8">
                             <div class="logo">
@@ -94,7 +94,9 @@
 
 
                         <div class="col-md-2">
-                            <div class="admin-screen">
+                            <div class="admin-screen left-button">
+                                <a id="reset-game" class="btn-main">Oyunu Yeniden Başlat!</a>
+                                <a id="get-links" href="http://ec2-3-17-77-133.us-east-2.compute.amazonaws.com:8000/generateUrlCsv/" class="btn-main">Linkleri İndir</a>
 
                             </div>
 
@@ -148,10 +150,116 @@
                             </div>
 
                             <div class="admin-screen">
-                                <div id="admin-panel" style="text-align: center;margin-top:150px;">
-                                    Admin Panel Yapım Aşamasında!
+                                <div id="admin-panel">
+                                    <form id="games-data" enctype="multipart/form-data" class="form-horizontal" novalidate="">
+                                        <fieldset>
 
-                                <a id="reset-game" class="btn-main">Oyunu Yeniden Başlat!</a>
+                                            <div class="form-group ">
+
+                                                <label class="col-sm-12 control-label ">
+                                                    Şirket Adı
+                                                </label>
+
+                                                <div class="col-sm-6">
+                                                    <input name="company_name" class="form-control" type="text"
+                                                        value="">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+
+                                                <label class="col-sm-12 control-label ">
+                                                    Oyun içi yazı
+                                                </label>
+
+
+                                                <div class="col-sm-10">
+                                                    <input name="game_text" class="form-control" type="text"
+                                                        value="">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+
+                                                <label class="col-sm-12 control-label ">
+                                                    Kayıt sayfası karşılama yazısı
+                                                </label>
+
+                                                <div class="col-sm-10">
+                                                    <input name="register_text" class="form-control" type="text"
+                                                        value="">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group d-none">
+
+                                                <label class="col-sm-12 control-label ">
+                                                    Webinar link
+                                                </label>
+
+
+                                                <div class="col-sm-10">
+                                                    <input name="webinar_link" class="form-control" type="text"
+                                                        value="">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group d-none">
+
+                                                <label class="col-sm-12 control-label ">
+                                                    Webinar Linki ne zaman gösterilsin?
+                                                </label>
+
+                                                <div class="col-sm-10">
+                                                    <input name="disp_webinar_link_dt" class="form-control"
+                                                        type="datetime-local" value="">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+
+                                                <label class="col-sm-12 control-label ">
+                                                    Oyun Başlangıç Tarihi
+                                                </label>
+
+
+                                                <div class="col-sm-10">
+                                                    <input name="start_datetime" class="form-control"
+                                                        type="datetime-local" value="">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+
+                                                <label class="col-sm-12 control-label ">
+                                                    Logo
+                                                </label>
+
+
+                                                <div class="col-sm-10">
+                                                    <input name="logo" type="file" value="null">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group d-none">
+                                                <div class="col-sm-10">
+                                                    <input id="game-owner" name="owner" class="form-control" type="text"
+                                                        value="">
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-actions">
+                                                <button type="submit" id="save-game-data" class="btn-main">Kaydet</button>
+                                            </div>
+                                        </fieldset>
+                                    </form>
+
 
                                 </div>
                             </div>

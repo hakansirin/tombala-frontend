@@ -11,6 +11,8 @@ V = {
     getToken: url + 'api-token-auth/',
     adminGameData: url + "adminGameData/",
     resetGameUrl: url + "deleteAllMoves/",
+    gamesUrl : url + "games/",
+    generateUrl:url + "generateUrlCsv/",
     NumberColumn: "",
     cardColor: "",
     cardID: "",
@@ -18,12 +20,8 @@ V = {
     isBirinciCinko: "",
     isIkinciCinko: "",
     isTombala: "",
-    companyName: "",
-    gameText: "",
-    webinarLink: "",
-    webinarDate: "",
-    startDate: "",
-    logo: "",
+    gameID:"",
+    gameOwner:"",
 
     init: function () {
         V.AuthToken.init();
@@ -33,7 +31,7 @@ V = {
         V.forms.init();
     },
 
-    ajaxRequest: function (baseUrl, requestType, sentData = null) {
+    ajaxRequest: function (baseUrl, requestType, sentData = null,async=false) {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: baseUrl,
@@ -45,7 +43,33 @@ V = {
                 type: requestType,
                 data: ((sentData != null && requestType != "GET") ? sentData : (sentData != null && requestType == "GET") ? sentData : null),
                 dataType: "json",
-                /*contentType: "application/json",*/
+                async : async,
+                // contentType: "application/json",
+                success: function (response) {
+                    resolve(response)
+                },
+                error: function (error) {
+                    console.log(error)
+                    reject(error)
+                },
+            })
+        })
+    },
+
+    ajaxRequestMultiPart: function (baseUrl, requestType, sentData = null) {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: baseUrl,
+                cache: true,
+                //crossDomain: true,
+                beforeSend: function (request) {
+                    request.setRequestHeader("Authorization", "Token " + V.AuthToken.getCookie('csrftoken'));
+                },
+                type: requestType,
+                data: ((sentData != null && requestType != "GET") ? sentData : (sentData != null && requestType == "GET") ? sentData : null),
+                dataType: "json",
+                prossesData: false,
+                contentType: "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
                 success: function (response) {
                     resolve(response)
                 },
@@ -274,6 +298,8 @@ V = {
                         $(".last-number .number" + index).text(value);
                     });
 
+                    //Change Logo
+                    $("#companyLogo").attr("src", url + data.logo);
 
                     $(".wrap .num").removeClass("win win2 win-bingo");
                     $(".wrap .name a").removeClass("win win2 win-bingo");
@@ -572,40 +598,46 @@ V = {
         resetGame: function () {
 
             $("#reset-game").click(function () {
-                V.ajaxRequest(V.resetGameUrl, "DELETE")
-                .then((response) => {
+
+                var answer = window.confirm("Oyun geri dönülemez şekilde yeniden başlatılacaktır?");
+                if (answer) {
                     $("#loader_form").addClass("show"); //Loading
+                    V.ajaxRequest(V.resetGameUrl, "DELETE")
+                    .then((response) => {
+    
+                        $(".wrap .count").empty();
+                        $(".wrap .name").empty();
+                        if ($(".wrap .count").text() == "") {
+                            $(".wrap .count").text("-")
+                        }
+                        $(".wrap .num").removeClass("win win2 win-bingo");
+                        $(".wrap .name a").removeClass("win win2 win-bingo");
+                        $(".winner-card").empty();
+                       
+        
+                        $(".admin-screen").css("display", "none");
+                        $(".admin-screen").removeClass("animate__animated animate__fadeIn");
+        
+                        $(".card-screen").css("display", "none");
+                        $(".card-screen").removeClass("animate__animated animate__lightSpeedInLeft");
+        
+                        $(".game-screen").css("display", "block");
+                        $(".game-screen").addClass("animate__animated animate__fadeIn");
+    
+                        $(".last-number .num").text("-");
+                        
+    
+                        V.bingo.setData();
+        
+                        $("#loader_form").removeClass("show"); //Loading
+                    })
+                    .catch((error) => {
+                        console.log("V.bingo.resetGame() - error delete")
+                        console.log(error)
+                    });
+                }
 
-                    $(".wrap .count").empty();
-                    $(".wrap .name").empty();
-                    if ($(".wrap .count").text() == "") {
-                        $(".wrap .count").text("-")
-                    }
-                    $(".wrap .num").removeClass("win win2 win-bingo");
-                    $(".wrap .name a").removeClass("win win2 win-bingo");
-                    $(".winner-card").empty();
-                   
-    
-                    $(".admin-screen").css("display", "none");
-                    $(".admin-screen").removeClass("animate__animated animate__fadeIn");
-    
-                    $(".card-screen").css("display", "none");
-                    $(".card-screen").removeClass("animate__animated animate__lightSpeedInLeft");
-    
-                    $(".game-screen").css("display", "block");
-                    $(".game-screen").addClass("animate__animated animate__fadeIn");
-
-                    $(".last-number .num").text("-");
-                    
-
-                    V.bingo.setData();
-    
-                    $("#loader_form").removeClass("show"); //Loading
-                })
-                .catch((error) => {
-                    console.log("V.bingo.resetGame() - error delete")
-                    console.log(error)
-                });
+              
     
             });
     
@@ -613,35 +645,18 @@ V = {
          
 
           }
+
+
     },
 
     admin: {
 
-        init: function () {},
+        init: function () {
+            V.admin.getGameData();
+            V.admin.saveGameData();
 
-        company: function () {
-
-
-            V.ajaxRequest(V.adminGameData, "GET")
-                .then((response) => {
-
-
-                    V.companyName = response.company_name;
-                    V.gameText = response.game_text;
-                    V.webinarLink = response.webinar_link;
-
-                    V.logo = response.logo;
-
-
-                    $("#gameText").text(V.admin.gameText);
-                    $("#companyLogo").attr("src", V.admin.logo);
-
-                })
-                .catch((error) => {
-                    console.log("ERROR - company - GET ")
-                    console.log(error)
-                });
         },
+
         parseDate: function (date) {
             var dateArray = [];
             year = date.substring(0, 4);
@@ -653,27 +668,83 @@ V = {
             dateArray = [year, month, day, hour, minute, second];
             return dateArray;
         },
-        combDate: function (DateArray) {
+        combDate: function (date) {
 
-            date
-
-            date = "";
-            date += DateArray[0];
-            date = "-";
-            date += DateArray[1];
-            date = "-";
-            date += DateArray[2];
-            date = " ";
-            date += DateArray[3];
-            date = ":";
-            date += DateArray[4];
-            date = ":";
-            date += DateArray[5];
+            parseDate = V.admin.parseDate(date);
 
 
-            return date;
+            newFormat = "";
+            newFormat += parseDate[0];
+            newFormat += "-";
+            newFormat += parseDate[1];
+            newFormat += "-";
+            newFormat += parseDate[2];
+            newFormat += "T";
+            newFormat += parseDate[3];
+            newFormat += ":";
+            newFormat += parseDate[4];
 
-        }
+
+            return newFormat;
+
+        },
+        getGameData:function () { 
+
+            $("#yonetim").click(function () {
+                
+                V.ajaxRequest(V.adminGameData, "GET", null , false)
+                .then((response) => {
+                    $("input[name='company_name']").val(response.company_name);
+                    $("input[name='game_text']").val(response.game_text);
+                    $("input[name='register_text']").val(response.register_text);
+                    $("input[name='webinar_link']").val(response.webinar_link);
+                    $("input[name='disp_webinar_link_dt']").val(V.admin.combDate(response.disp_webinar_link_dt));
+                    $("input[name='start_datetime']").val(V.admin.combDate(response.start_datetime));
+                    
+                    V.gameOwner = response.owner;
+                    V.gameID = response.id;
+                    $("input[name='owner']").val(response.owner);
+    
+                })
+                .catch((error) => {
+                    console.log("ERROR - company - GET ")
+                    console.log(error)
+                });
+                
+            });
+         },
+         saveGameData:function () { 
+
+            $("#games-data").submit(function(e) {
+                e.preventDefault();    
+                var formData = new FormData(this);
+            
+                $.ajax({
+                    url: V.gamesUrl + V.gameID + "/",
+                    type: 'PUT',
+                    beforeSend: function (request) {
+                        request.setRequestHeader("Authorization", "Token " + V.AuthToken.getCookie('csrftoken'));
+                    },
+                    data: formData,
+                    success: function (data) {
+
+
+
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    error: function (error) {
+                    console.log(error)
+                    reject(error)
+                }
+                });
+            });
+
+ 
+         },
+       
+
     },
 
     forms: {

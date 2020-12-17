@@ -89,7 +89,7 @@ body#register{
     width:75%;
     display: block;
     border-radius: 15.5px;
-    padding:10px 30px;
+    padding:10px 15px;
     background: none;
     border:2px solid #fff;
     color:#fff;
@@ -391,10 +391,7 @@ footer{
 }
 
 .sirket-logo{
-    position:absolute;
-    width:10%;
-    left:1%;
-    top:1%;
+
 }
 .sirket-logo img{
     width:100%;
@@ -916,5 +913,17 @@ select {
 
 #reset-game{
     margin-top:35px;
-    width:40%;
+    width:100%;
+}
+input[name="logo"]{
+    color:#fff;
+}
+#companyLogo{
+    width: 200px;
+    height: 70px;
+    object-fit: contain;
+}
+
+.admin-screen.left-button a{
+margin-bottom: 25px;
 }
