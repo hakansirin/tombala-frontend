@@ -11,6 +11,7 @@ V = {
     getToken: url + 'api-token-auth/',
     adminGameData: url + "adminGameData/",
     resetGameUrl: url + "deleteAllMoves/",
+    downloadUrls: url + "generateUrlCsv/",
     gamesUrl : url + "games/",
     generateUrl:url + "generateUrlCsv/",
     NumberColumn: "",
@@ -277,7 +278,7 @@ V = {
             V.bingo.moveBack();
             V.bingo.deletePerson();
             V.bingo.resetGame();
-
+            V.bingo.downloadUrls();
 
         },
         setData: function () {
@@ -644,7 +645,37 @@ V = {
 
          
 
-          }
+          },
+        downloadUrls: function () {
+            $("#get-links").click(function () {
+
+                // var answer = window.confirm("Oyun geri dönülemez şekilde yeniden başlatılacaktır?");
+                //(baseUrl, requestType, sentData = null,async=false)
+                console.log('ins atcaz')
+                    V.ajaxRequest(V.downloadUrls, "GET")
+                    .then((response) => {
+                        // TODO: nedense buraya girmiyo amk kodu
+                        console.log('satir 660')
+                        console.log(response)
+                        var blob=new Blob([data]);
+                        var link=document.createElement('a');
+                        link.href=window.URL.createObjectURL(blob);
+                        link.download="file.csv";
+                        link.click();
+                    })
+                    .catch((error) => {
+                        console.log("V.bingo.download_urls() - error get")
+                        console.log(error)
+                        // TODO: ama benden kacar mi yakaladim indirdim valla file i
+                        var blob=new Blob([error.responseText]);
+                        var link=document.createElement('a');
+                        link.href=window.URL.createObjectURL(blob);
+                        link.download="file.csv";
+                        link.click();
+                    });
+            });
+
+        }
 
 
     },
@@ -728,7 +759,9 @@ V = {
                     data: formData,
                     success: function (data) {
 
+                        alert("Başarıyla kaydedildi.");
 
+                        location.reload();
 
                     },
                     cache: false,

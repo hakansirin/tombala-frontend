@@ -87,7 +87,59 @@
 /* iPhone 4 & 4S */
 
 @media(max-device-width: 960px ) and (max-width: 960px){
-
+    .t-card div {
+        height: 50px;
+        width: 40px;
+        font-size: 28px;
+    }
+    .logo img {
+        width: 80%;
+    }
+    .countdown canvas{
+        width:90px;
+        height:90px;
+    }
+    .form-or-name .text {
+        font-size: 20px;
+    }
+    .form-or-name .text span {
+        font-size: 22px;
+        color: #ffdc00;
+    }
+    footer{
+        text-align: center !important;
+    }
+    footer .right{
+        float:unset;
+        margin-top:15px;
+    }
+    .error-text {
+        margin-top: unset;
+        top: 60%;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+    .form-group{
+        padding:0;
+    }
+    .two.form-group .form-group:last-child {
+        padding-left: 35px;
+    }
+    .two.form-group .form-group:last-child {
+        padding-left: 10px;
+    }
+    .two.form-group .form-group:first-child {
+        padding-right: 10px;
+    }
+    .button-100 .btn-main {
+        margin-bottom: 20px;
+    }
+    .countdown .clock:after {
+        height: 75%;
+        border: 3px solid #49635b;
+        top: 4px;
+    }
 }
 
 /* Tablets */
@@ -111,11 +163,32 @@
 
 /* Slim Smartphone */
 
-@media(max-device-width: 360px) and (max-width: 360px){
+@media(max-device-width: 375px) and (max-width: 375px){
  
 }
 
 @media(max-device-width: 320px) and (max-width: 320px){
+    .t-card div {
+        height: 43px;
+        width: 33px;
+        font-size: 22px;
+        border: solid 1px #000;
+    }
+    .countdown .clock:after {
+        height: 75%;
+        border: 3px solid #49635b;
+        top: 4px;
+    }
+    .countdown canvas{
+        width:75px;
+        height:75px;
+    }
+    .countdown .label span{
+        font-size:28px;
+    }
+    #form-register input {
+        padding: 10px;
+    }
 
 }
 

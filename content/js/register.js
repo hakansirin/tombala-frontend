@@ -17,9 +17,22 @@ V = {
     newThirdRow: "",
     colorIndex: 0,
     currentColor: "red",
+    CompanyName:"",
+    logo:"",
+    register_text:"",
+    start_datetime:"",
+    webinar_link:"",
+    disp_webinar_link_dt:"",
+    cardLetter:"",
+    card_A_id:"",
+    card_B_id:"",
+    card_C_id:"",
+    card_D_id:"",
+    familyData:"",
 
     init: function () {
         V.global();
+        V.game.init();
         V.buttons.init();
         V.register.init();
         V.forms.init();
@@ -60,37 +73,73 @@ V = {
         },
 
         clickBtn: function () {
-            $("#change-card").click(function () {
-                $("#loader_form").addClass("show")
-                V.register.newCard();
-                $("#loader_form").removeClass("show")
-            });
 
-            $("#change-color").click(function () {
-                tcardID = $('.t-card').attr('id');
-                color = ["blue", "yellow", "green", "pink", "darkblue", "red"]
+            // Change CARD
+            V.buttons.changeCard("A");
+            V.buttons.changeCard("B");
+            V.buttons.changeCard("C");
+            V.buttons.changeCard("D");
 
-
-                $('.t-card').removeAttr('class').attr('class', '');
-                $("#" + tcardID).addClass('t-card ' + color[V.colorIndex]);
-
-                V.currentColor = color[V.colorIndex];
-
-                if (V.colorIndex == 5) {
-                    V.colorIndex = 0;
-                }
-                V.colorIndex += 1;
-
-            });
-
+            //Change COLOR
+            V.buttons.changeColor("A");
+            V.buttons.changeColor("B");
+            V.buttons.changeColor("C");
+            V.buttons.changeColor("D");
+            
+            
+            // PDF Download
             $(document).on('click', '#download-pdf', function () {
                 var element = document.getElementById('card-wrap');
                 html2pdf(element);
             });
 
-           
-        }
+            //Family Number Select
+            $('#family').change(function(){
+                V.familyData= $(this).val();
+                
+                if(V.familyData == 1) {
+                    $("#card-A").removeClass("d-none");
+                    $("#card-B").addClass("d-none");
+                    $("#card-C").addClass("d-none");
+                    $("#card-D").addClass("d-none");
+                }
+                if(V.familyData == 2) {
+                    $("#card-A").removeClass("d-none");
+                    $("#card-B").removeClass("d-none");
+                    $("#card-C").addClass("d-none");
+                    $("#card-D").addClass("d-none");
+                }
+                if(V.familyData == 3) {
+                    $("#card-A").removeClass("d-none");
+                    $("#card-B").removeClass("d-none");
+                    $("#card-C").removeClass("d-none");
+                    $("#card-D").addClass("d-none");
+                }
+                if(V.familyData == 4) {
+                    $("#card-A").removeClass("d-none");
+                    $("#card-B").removeClass("d-none");
+                    $("#card-C").removeClass("d-none");
+                    $("#card-D").removeClass("d-none");
+                }
+              });
 
+           
+        },
+        changeColor: function (letter) {
+            V.color = ["blue", "yellow", "green", "pink", "darkblue", "red"]
+            colorIndex = 0;
+            $(document).on('click', "#change-color-"+letter, function () {
+                var colorIndex = Math.floor((Math.random() * 6) + 0);
+                $("#card-"+letter+" ul").removeAttr('class').attr('class', '');
+                $("#card-"+letter+" ul").addClass('t-card ' + V.color[colorIndex]);
+            });
+        },
+        changeCard:function (letter) { 
+            $(document).on('click', "#change-card-" + letter, function () {
+                dontChangeColor = $("#card-"+letter+" ul").attr('class').replace("t-card","");
+                V.register.newCard(letter, dontChangeColor);
+            });
+         }
 
     },
 
@@ -102,32 +151,21 @@ V = {
         },
 
         registerData: function () {
-            $("#send-register").click(function () {
 
+
+            $("#form-register").submit(function(e) {
+
+                e.preventDefault();    
+                var formData = new FormData(this);
+            
                 getEmail = $("input#email").val();
                 getName = $("input#name").val();
                 getSurname = $("input#surname").val();
 
-                // if (getEmail.includes != "@" || getEmail.length == 0) {
-                //     $("label#email").html("Lütfen Uygun bir E-Posta Adresi Giriniz!");
-                //     $("label#email").css("color", "red");
-                // }
-                // if (getName.length <= 2) {
-                //     $("label#name").html("Gerçek bir isim giriniz!");
-                //     $("label#name").css("color", "red");
-                // }
-                // if (getSurname.length <= 1) {
-                //     $("label#surname").html("Gerçek bir Soyisim giriniz!");
-                //     $("label#surname").css("color", "red");
-                // } 
+                V.register.newGamer(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
 
-                    console.log(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
-
-
-                    V.register.newGamer(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
-
-
-            });
+                });
+         
         },
 
         getValidateKey: function (url) {
@@ -152,7 +190,7 @@ V = {
             return dateArray = [year, month, day, hour, minute, second];
         },
 
-        newCard: function () {
+        newCard: function (letter,color) {
 
             V.ajaxRequest(url + V.cardUrl, "POST", false)
                 .then((response) => {
@@ -160,16 +198,22 @@ V = {
                     console.log("newCARD()");
                     console.log(response);
 
-                    $(".card-wrap").html(V.bingo.createCard(V.GamersURLID, "red"));
+                    
+                    if(letter=="A"){$("#card-A").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_A_id = response.id;}
+                    if(letter=="B"){$("#card-B").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_B_id = response.id;}
+                    if(letter=="C"){$("#card-C").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_C_id = response.id;}
+                    if(letter=="D"){$("#card-D").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_D_id = response.id;}
 
 
 
-                    V.bingo.getCinko(JSON.parse(response.first_row), "A");
-                    V.bingo.getCinko(JSON.parse(response.second_row), "B");
-                    V.bingo.getCinko(JSON.parse(response.third_row), "C");
+                    V.bingo.getCinko(JSON.parse(response.first_row), "A", letter);
+                    V.bingo.getCinko(JSON.parse(response.second_row), "B", letter);
+                    V.bingo.getCinko(JSON.parse(response.third_row), "C", letter);
 
                     V.newCardID = response.id;
                     V.newCard = response;
+
+                   
 
                 })
                 .catch((error) => {
@@ -228,6 +272,16 @@ V = {
                         console.log("success")
                         console.log(response)
 
+                        V.CompanyName = response.company_name;
+                        V.logo = response.logo;
+                        V.register_text = response.register_text;
+                        V.start_datetime = response.start_datetime;
+                        V.webinar_link = response.webinar_link;
+                        V.disp_webinar_link_dt = response.disp_webinar_link_dt;
+                    
+                        $(".register-text").text(V.register_text);
+                        $("#companyLogo").attr("src", url + V.logo);
+
                         // Register NO
                         if (response.gamer == null) {
                             // POST - create card
@@ -236,7 +290,11 @@ V = {
                             $(".form-or-name .text").addClass("d-none");
                             V.GamersURLID = response.id;
 
-                            V.register.newCard();
+                            V.register.newCard("A","red");
+                            V.register.newCard("B","blue");
+                            V.register.newCard("C","yellow");
+                            V.register.newCard("D","pink");
+
                         }
                         // Register YES
                         else {
@@ -245,7 +303,7 @@ V = {
                             $("#register .button-wrap").addClass("d-none");
                             $(".card-wrap").html(V.bingo.createCard(response.id, "red"));
 
-                            $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id="+ "download-pdf" +"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
+                            $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id=\"download-pdf\"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
 
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A");
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B");
@@ -366,12 +424,12 @@ V = {
     },
 
     bingo: {
-        createCard: function (id, cardColor) {
-            let content = "<ul id=\"user" + id + "\"  class=\"t-card " + cardColor + "\">\r\n<li id=\"column1\">\r\n<div id=\"A1\"><\/div>\r\n<div id=\"B1\"><\/div>\r\n<div id=\"C1\"><\/div>\r\n<\/li>\r\n<li id=\"column2\">\r\n<div id=\"A2\"><\/div>\r\n<div id=\"B2\"><\/div>\r\n<div id=\"C2\"><\/div>\r\n<\/li>\r\n<li id=\"column3\">\r\n<div id=\"A3\"><\/div>\r\n<div id=\"B3\"><\/div>\r\n<div id=\"C3\"><\/div>\r\n<\/li>\r\n<li id=\"column4\">\r\n<div id=\"A4\"><\/div>\r\n<div id=\"B4\"><\/div>\r\n<div id=\"C4\"><\/div>\r\n<\/li>\r\n<li id=\"column5\">\r\n<div id=\"A5\"><\/div>\r\n<div id=\"B5\"><\/div>\r\n<div id=\"C5\"><\/div>\r\n<\/li>\r\n<li id=\"column6\">\r\n<div id=\"A6\"><\/div>\r\n<div id=\"B6\"><\/div>\r\n<div id=\"C6\"><\/div>\r\n<\/li>\r\n<li id=\"column7\">\r\n<div id=\"A7\"><\/div>\r\n<div id=\"B7\"><\/div>\r\n<div id=\"C7\"><\/div>\r\n<\/li>\r\n<li id=\"column8\">\r\n<div id=\"A8\"><\/div>\r\n<div id=\"B8\"><\/div>\r\n<div id=\"C8\"><\/div>\r\n<\/li>\r\n<li id=\"column9\">\r\n<div id=\"A9\"><\/div>\r\n<div id=\"B9\"><\/div>\r\n<div id=\"C9\"><\/div>\r\n<\/li>\r\n<\/ul>";
+        createCard: function (id, cardColor,letter) {
+            let content = " <ul id=\"user" + id + "\"  class=\"t-card " + cardColor + "\">\r\n<li id=\"column1\">\r\n<div id=\"A1\"><\/div>\r\n<div id=\"B1\"><\/div>\r\n<div id=\"C1\"><\/div>\r\n<\/li>\r\n<li id=\"column2\">\r\n<div id=\"A2\"><\/div>\r\n<div id=\"B2\"><\/div>\r\n<div id=\"C2\"><\/div>\r\n<\/li>\r\n<li id=\"column3\">\r\n<div id=\"A3\"><\/div>\r\n<div id=\"B3\"><\/div>\r\n<div id=\"C3\"><\/div>\r\n<\/li>\r\n<li id=\"column4\">\r\n<div id=\"A4\"><\/div>\r\n<div id=\"B4\"><\/div>\r\n<div id=\"C4\"><\/div>\r\n<\/li>\r\n<li id=\"column5\">\r\n<div id=\"A5\"><\/div>\r\n<div id=\"B5\"><\/div>\r\n<div id=\"C5\"><\/div>\r\n<\/li>\r\n<li id=\"column6\">\r\n<div id=\"A6\"><\/div>\r\n<div id=\"B6\"><\/div>\r\n<div id=\"C6\"><\/div>\r\n<\/li>\r\n<li id=\"column7\">\r\n<div id=\"A7\"><\/div>\r\n<div id=\"B7\"><\/div>\r\n<div id=\"C7\"><\/div>\r\n<\/li>\r\n<li id=\"column8\">\r\n<div id=\"A8\"><\/div>\r\n<div id=\"B8\"><\/div>\r\n<div id=\"C8\"><\/div>\r\n<\/li>\r\n<li id=\"column9\">\r\n<div id=\"A9\"><\/div>\r\n<div id=\"B9\"><\/div>\r\n<div id=\"C9\"><\/div>\r\n<\/li>\r\n<\/ul> <div class=\"buttons\"><a id=\"change-card-" + letter + "\" class=\"btn-main\">Rakam Degistir<\/a><a id=\"change-color-" + letter + "\" class=\"btn-main\">Renk Degistir<\/a><\/div> ";
 
             return content;
         },
-        getCinko: function (cinkoArray, columnLet) {
+        getCinko: function (cinkoArray, columnLet, cardName) {
 
             $(eval(cinkoArray)).each(function (index, rowNum) {
 
@@ -379,7 +437,7 @@ V = {
 
                 for (i = 0; i < 10; i++) {
                     if (number == i) {
-                        $(" #" + columnLet + i).text(rowNum);
+                        $("#card-" + cardName +" #" + columnLet + i).text(rowNum);
                     }
                 }
 
@@ -390,6 +448,29 @@ V = {
             let returnColumn = Math.floor((NumberColumn + 9) / 10);
             return returnColumn;
         },
+    },
+
+    game : {
+
+        init:function () { 
+         },
+
+        setData: function () {
+            $("#loader_form").addClass("show"); //Loading - Validate URL çek
+            V.ajaxRequest(V.validateUrl, 'GET')
+                .then((response) => {
+                    let data = response;
+                    //Change Logo
+                    $("#companyLogo").attr("src", url + data.logo);
+
+                    $("#loader_form").removeClass("show"); //Loading
+                })
+                .catch((error) => {
+                    console.log("V.game.Setdata() - error get")
+                    console.log(error)
+                   
+                });
+            }
     },
 
     forms: {

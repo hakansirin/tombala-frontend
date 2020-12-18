@@ -49,16 +49,13 @@
 </head>
 
 <body id="register">
-
-   
-
     <section id="sec1">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-2">
                     <div class="sirket-logo">
                         <div class="logo">
-                            <img id="companyLogo" src="content/images/logo/rhino.svg" alt="">
+                            <img id="companyLogo" src="" alt="">
                         </div>
                     </div>
                 </div>
@@ -70,16 +67,14 @@
                 <div class="col-md-2">
                     
                 </div>
-                <div class="col-md-8 d-none">
-                    <div class="text">
-                        Geleneksel Rhino tombalamız bu sene ne yazık ki her sene olduğu gibi ortak çalışma alanımızda
-                        değil, bu senenin şartları gereğince webinar olarak yapılacaktır.
+                <div class="col-md-8">
+                    <div class="text register-text">
+                        Register TEXT
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
     <section id="sec2" class="cd-area">
         <div class="container">
             <div class="row justify-content-center">
@@ -140,7 +135,6 @@
             </div>
         </div>
     </section>
-
     <section id="sec3" class="form-sec">
         <div class="container">
             <div class="row justify-content-center">
@@ -154,9 +148,6 @@
                                 <input id="email" type="email" for="email" required
                                     placeholder="Kartını seçmek için şirket mail adresini giriniz">
                             </div>
-
-
-
                             <div class="form-group two">
                                 <div class="form-group">
                                     <label id="name" for="isim">İsim:</label><br>
@@ -167,8 +158,17 @@
                                     <input id="surname" type="text" for="soyisim" required placeholder="Soyisim giriniz">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="family">Evde kaç kişisiniz?</label><br>
+                                <select id="family">
+                                    <option disabled selected>Kişi sayısını seçiniz</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                  </select>
+                            </div>
                         </form>
-
                         <div class="text">
                             <div class="name">
                                 
@@ -189,16 +189,16 @@
 
                 <div class="content ">
                     <div id="card-wrap" class="card-wrap winner-card">
-
+                        <div id="card-A"></div>
+                        <div id="card-B" class="d-none"></div>
+                        <div id="card-C" class="d-none"></div>
+                        <div id="card-D" class="d-none"></div>
                     </div>
 
                     <div class="button-wrap d-none">
-                        <div class="buttons">
-                            <a id="change-card" class="btn-main">Rakam Değiştir</a>
-                            <a id="change-color" class="btn-main">Renk Değiştir</a>
-                        </div>
+                        
                         <div class="button-100">
-                            <a id="send-register" class="btn-main">TAMAM</a>
+                            <button type="submit" form="form-register" id="send-register" class="btn-main">TAMAM</button>
                         </div>
                     </div>
 

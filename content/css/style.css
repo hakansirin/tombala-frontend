@@ -927,3 +927,17 @@ input[name="logo"]{
 .admin-screen.left-button a{
 margin-bottom: 25px;
 }
+
+#login .sirket-logo{
+    position: absolute;
+    left:1%;
+    top:1%;
+}
+
+#register .logo img {
+    width: 50%;
+}
+
+#register .sirket-logo img {
+    width:100%;
+}

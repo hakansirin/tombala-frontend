@@ -19,6 +19,7 @@ V = {
 
     init: function () {
         V.AuthToken.init();
+        V.game.init();
         V.global();
         V.forms.init();
     },
@@ -138,6 +139,30 @@ V = {
         deleteCsrfToken: function () {
             document.cookie = "csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         }
+    },
+
+    game : {
+
+        init:function () { 
+            V.game.setData();
+         },
+
+        setData: function () {
+            $("#loader_form").addClass("show"); //Loading
+            V.ajaxRequest(V.gameStatus, 'GET')
+                .then((response) => {
+                    let data = response;
+                    //Change Logo
+                    $("#companyLogo").attr("src", url + data.logo);
+
+                    $("#loader_form").removeClass("show"); //Loading
+                })
+                .catch((error) => {
+                    console.log("V.game.Setdata() - error get")
+                    console.log(error)
+                   
+                });
+            }
     },
 
     forms: {
