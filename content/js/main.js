@@ -11,7 +11,6 @@ V = {
     getToken: url + 'api-token-auth/',
     adminGameData: url + "adminGameData/",
     resetGameUrl: url + "deleteAllMoves/",
-    downloadUrls: url + "generateUrlCsv/",
     gamesUrl : url + "games/",
     generateUrl:url + "generateUrlCsv/",
     NumberColumn: "",
@@ -84,8 +83,6 @@ V = {
 
     global: function () {
 
-
-
         //Notification Menu
         $(".notification .numbers .wrap").click(function () {
 
@@ -103,18 +100,17 @@ V = {
         var numberSelectHTML = "";
         for (i = 1; i < 91; i++) {
             numberSelectHTML += `
-        <div class="round ${i}">
+        <div class="round" id="roundid${i}">
         <input type="checkbox" class="picked" name="picked" id="num${i}" value="${i}">
         <label>${i}</label>
         </div>`;
-
         }
         if ($('#number-select').length) {
             document.querySelector("#number-select").innerHTML = numberSelectHTML;
         }
 
-        $('input:checkbox').click(function () {
-            $('input:checkbox').not(this).prop('checked', false);
+        $('#number-select input:checkbox').click(function () {
+            $('#number-select input:checkbox').not(this).prop('checked', false);
         });
 
         //People Card Open
@@ -170,6 +166,8 @@ V = {
 
             $(".admin-screen").css("display", "block");
             $(".admin-screen").addClass("animate__animated animate__fadeIn");
+
+            $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
         });
         // Admin Panel to game
         $("#turn-game").click(function () {
@@ -182,6 +180,26 @@ V = {
             $(".game-screen").css("display", "block");
             $(".game-screen").addClass("animate__animated animate__fadeIn");
         });
+
+        //Random Button Display 
+
+        $("#round-check").click(function (){
+            randomCheck = document.getElementById('round-check')
+            if (randomCheck.checked == true){
+                $("#random-isaretle").removeClass("d-none");
+                $("#isaretle").addClass("d-none");
+                $("#number-select").addClass("click-block");
+                $(".round input[type=checkbox]").prop('checked',false);
+               } else {
+                 $("#random-isaretle").addClass("d-none");
+                $("#isaretle").removeClass("d-none");
+                $("#number-select").removeClass("click-block");
+               }
+        });
+
+        
+ 
+        
 
         //quit
         $("#quit").click(function () {
@@ -280,6 +298,7 @@ V = {
             V.bingo.resetGame();
             V.bingo.downloadUrls();
 
+
         },
         setData: function () {
             $("#loader_form").addClass("show"); //Loading
@@ -299,9 +318,12 @@ V = {
                         $(".last-number .number" + index).text(value);
                     });
 
+                    //Game Text
+                    $("#gameText").text(response.game_text);
                     //Change Logo
-                    $("#companyLogo").attr("src", url + data.logo);
+                    $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + data.logo + ' alt="">')
 
+                    $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
                     $(".wrap .num").removeClass("win win2 win-bingo");
                     $(".wrap .name a").removeClass("win win2 win-bingo");
                     confetti.stop();
@@ -404,6 +426,120 @@ V = {
                             $("#num" + value).prop('disabled', true);
                         });
                         $(data.last_three_moves).each(function (index, value) {
+                            if(index==0){
+                                $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
+                                $("#roundid"+value).addClass("last-number-effect animate__animated animate__heartBeat animate__slower");
+                                console.log("#roundid"+value)
+                            }
+                            $(".last-number .number" + index).text(value);
+                        });
+
+                        //Puan Tablosu Ad ve Kişi Sayısı Hesaplanan Veriler
+                        $(".wrap .count").empty();
+                        $(".wrap .name").empty();
+                        if ($(".wrap .count").text() == "") {
+                            $(".wrap .count").text("-")
+                        }
+                        $(".winner-card").empty();
+
+                        $(".wrap .num").removeClass("win win2 win-bingo");
+                        $(".wrap .name a").removeClass("win win2 win-bingo");
+                        confetti.stop();
+
+
+                        for (var i = 0; i < Object.keys(data.leader_boards).length; i++) {
+                            $(data.leader_boards[i]).each(function (index, value) {
+
+                                var countPeople = Object.keys(data.leader_boards[i]).length;
+                                $("#num-to-people-" + i + " .count").text(countPeople + " Kişi");
+                                $("#num-to-people-" + i + " .name").append("<a id=\"user" + value.id + "\">" + value.owner + "<\/a>");
+
+                                //Birinci Çinko Bildirim
+                                if (value.is_birinci_cinko) {
+                                    $("ul#user" + value.id).remove();
+                                    $("p#user" + value.id).remove();
+
+                                    $("#num-to-people-" + i + " .num").addClass("win");
+                                    $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
+                                    $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
+
+                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
+                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
+                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                                    confetti.start();
+
+
+
+                                } else if (value.is_ikinci_cinko) {
+                                    $("ul#user" + value.id).remove();
+                                    $("p#user" + value.id).remove();
+
+                                    $("#num-to-people-" + i + " .num").addClass("win2");
+                                    $("#num-to-people-" + i + " .name #user" + value.id).addClass("win2");
+
+
+                                    $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler", "ikinci-cinko"));
+
+                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
+                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
+                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                                    confetti.start();
+
+
+
+                                } else if (value.is_tombala) {
+                                    $("ul#user" + value.id).remove();
+                                    $("p#user" + value.id).remove();
+
+                                    $("#num-to-people-" + i + " .num").addClass("win-bingo");
+                                    $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
+
+                                    $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler", "tombala"));
+                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
+                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
+                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                                    confetti.start();
+                                } else {
+                                    $("ul#user" + value.id).remove();
+                                    $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner, "userID" + value.id));
+                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
+                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
+                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                                }
+
+
+                            });
+                        }
+                        $("#loader_form").removeClass("show"); //Loading
+
+                    })
+                    .catch((error) => {
+                        console.log("V.bingo.clickBingo() - post error")
+                        console.log(error)
+                        $("#loader_form").removeClass("show"); //Loading
+                    });
+
+            });
+
+            $("#random-isaretle").click(function () {
+                $("#loader_form").addClass("show"); //Loading
+                let obj = {
+                    
+                }
+                let content = "";
+                V.ajaxRequest(V.makeMove, 'POST', obj)
+                    .then((response) => {
+                        let data = response;
+                        // Seçilen Numaralar Disabled Yapılıyor
+                        $(eval(data.picked_numbers)).each(function (index, value) {
+                            $("#num" + value).prop('disabled', true);
+                        });
+                        $(data.last_three_moves).each(function (index, value) {
+                            if(index==0){
+                                $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
+                                $("#roundid"+value).addClass("last-number-effect animate__animated animate__heartBeat animate__slower");
+                                console.log("#roundid"+value)
+                            }
                             $(".last-number .number" + index).text(value);
                         });
 
@@ -499,6 +635,7 @@ V = {
             $("#go-back").click(function () {
                 V.ajaxRequest(V.cancelMove, 'DELETE')
                     .then((response) => {
+                        $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
                         $(".wrap .count").empty();
                         $(".wrap .name").empty();
                         if ($(".wrap .count").text() == "") {
@@ -595,7 +732,6 @@ V = {
 
 
         },
-
         resetGame: function () {
 
             $("#reset-game").click(function () {
@@ -645,11 +781,11 @@ V = {
 
          
 
-          },
-        downloadUrls: function () {
+        },
+          downloadUrls: function () {
             $("#get-links").click(function () {
 
-                // var answer = window.confirm("Oyun geri dönülemez şekilde yeniden başlatılacaktır?");
+                // var answer = window.confirm("Oyun geri dÃ¶nÃ¼lemez ÅŸekilde yeniden baÅŸlatÄ±lacaktÄ±r?");
                 //(baseUrl, requestType, sentData = null,async=false)
                 console.log('ins atcaz')
                     V.ajaxRequest(V.downloadUrls, "GET")
@@ -725,7 +861,7 @@ V = {
                 
                 V.ajaxRequest(V.adminGameData, "GET", null , false)
                 .then((response) => {
-                    $("input[name='company_name']").val(response.company_name);
+                    // $("input[name='company_name']").val(response.company_name);
                     $("input[name='game_text']").val(response.game_text);
                     $("input[name='register_text']").val(response.register_text);
                     $("input[name='webinar_link']").val(response.webinar_link);

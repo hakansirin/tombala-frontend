@@ -16,6 +16,13 @@
     }
   }
 
+  @keyframes last-number-effect {
+    from { transform: scale(3.5); z-index: 9999; -webkit-transform: scale(3.5); -moz-transform: scale(3.5); -ms-transform: scale(3.5); -o-transform: scale(3.5);
+}
+    to { transform: scale(1); z-index: 1; -webkit-transform: scale(1); -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1);
+}
+  }
+
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;
@@ -701,7 +708,7 @@ select {
     /* Color */
     .winner-card .t-card.blue div {
         border-color: #2068b8;
-        color: #004396 !important;
+        color: #5699e3 !important;
     }
     .winner-card .t-card.blue div:empty {
         background-color: #004396;
@@ -941,3 +948,132 @@ margin-bottom: 25px;
 #register .sirket-logo img {
     width:100%;
 }
+
+.last-number-effect{
+    animation: last-number-effect 3.5s;
+    -webkit-animation: last-number-effect 3.5s;
+}
+.last-number-effect label{
+    background: tomato !important;
+}
+
+#admin .admin-screen {
+    display: block;
+}
+
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .switch input:checked + .slider {
+    background-color: #ffdc00;
+  }
+  
+  .switch input:focus + .slider {
+    box-shadow: 0 0 1px #ffdc00;
+  }
+  
+  .switch input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .switch  .slider.roundswitch {
+    border-radius: 34px;
+  }
+  
+  .switch  .slider.roundswitch:before {
+    border-radius: 50%;
+  }
+
+ .click-block{
+    pointer-events: none !important;
+ }
+
+ #create-game .form-group{
+     display:flex;
+     justify-content: center;
+    }
+
+    #create-game{
+        margin-top:35px;
+    }
+
+    #create-game .form-actions .btn-main{
+        width:30%;
+    }
+    #game-list {
+        margin-top:35px;
+    }
+    #game-list th{
+       width:100%; 
+   }
+    #game-list td{
+        width:100%; 
+    }
+    #game-list-btn,#create-game-btn{
+        margin-top:35px;
+    }
+    #create-game-btn{
+        display:none;
+    }
+
+    #admin #quit{
+        position: relative;
+        top:0;
+        margin-top: 35px;
+    }
+
+    #register .card-name{
+        font-size:28px;
+        text-align: center;
+        margin-top:35px;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: black;
+        color:tomato;
+    }
+
+    #game-start{
+        font-size:72px;
+        height:50vh;
+        color:#ffdc00;
+        display:flex;
+        align-items: center;
+        display:none;
+    }

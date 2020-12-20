@@ -6,6 +6,7 @@ V = {
     validateUrl: "validateUrl/",
     cardUrl: "cards/",
     gamersUrl: "gamers/",
+    multipleCardCreate: url + "create_gamer_and_attach_cards/",
     key: 0,
     getHash: "",
     newCardID: "",
@@ -29,6 +30,11 @@ V = {
     card_C_id:"",
     card_D_id:"",
     familyData:"",
+    card_A_color:"",
+    card_B_color:"",
+    card_C_color:"",
+    card_D_color:"",
+    dateDistance:"",
 
     init: function () {
         V.global();
@@ -62,8 +68,7 @@ V = {
     global: function () {
         $("#loader_form").addClass("show")
 
-
-
+     
     },
 
     buttons: {
@@ -148,10 +153,10 @@ V = {
         init: function () {
             V.register.checkValidateUrl(location.search);
             V.register.registerData();
+
         },
 
         registerData: function () {
-
 
             $("#form-register").submit(function(e) {
 
@@ -162,11 +167,12 @@ V = {
                 getName = $("input#name").val();
                 getSurname = $("input#surname").val();
 
-                V.register.newGamer(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
+                V.register.newGamerWithCard(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
 
                 });
          
         },
+
 
         getValidateKey: function (url) {
             validateKey = "";
@@ -190,6 +196,7 @@ V = {
             return dateArray = [year, month, day, hour, minute, second];
         },
 
+
         newCard: function (letter,color) {
 
             V.ajaxRequest(url + V.cardUrl, "POST", false)
@@ -199,21 +206,17 @@ V = {
                     console.log(response);
 
                     
-                    if(letter=="A"){$("#card-A").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_A_id = response.id;}
-                    if(letter=="B"){$("#card-B").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_B_id = response.id;}
-                    if(letter=="C"){$("#card-C").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_C_id = response.id;}
-                    if(letter=="D"){$("#card-D").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_D_id = response.id;}
-
-
+                    if(letter=="A"){$("#card-A").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_A_id = response.id;V.card_A_color = color;}
+                    if(letter=="B"){$("#card-B").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_B_id = response.id;V.card_B_color = color;}
+                    if(letter=="C"){$("#card-C").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_C_id = response.id;V.card_C_color = color;}
+                    if(letter=="D"){$("#card-D").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_D_id = response.id;V.card_D_color = color;}
 
                     V.bingo.getCinko(JSON.parse(response.first_row), "A", letter);
                     V.bingo.getCinko(JSON.parse(response.second_row), "B", letter);
                     V.bingo.getCinko(JSON.parse(response.third_row), "C", letter);
 
-                    V.newCardID = response.id;
-                    V.newCard = response;
-
-                   
+                    // V.newCardID = response.id;
+                    // V.newCard = response;
 
                 })
                 .catch((error) => {
@@ -264,6 +267,39 @@ V = {
 
         },
 
+        newGamerWithCard: function (name, surname, email, gamer_url, key) {
+       
+
+            card_ids = [V.card_A_id];
+            card_colors =  [ "\"" +V.card_A_color+ "\""];
+            if(V.familyData > 1) { card_ids.push( V.card_B_id);card_colors.push("\"" +V.card_B_color+ "\""); };
+            if(V.familyData > 2) { card_ids.push(V.card_C_id);card_colors.push("\"" +V.card_C_color+ "\""); };
+            if(V.familyData > 3) { card_ids.push(V.card_D_id);card_colors.push("\"" +V.card_D_color+ "\""); };
+
+            card_ids= "[" + card_ids.toString() + "]";
+            card_colors= "[" + card_colors.toString() + "]";
+
+            console.log(card_ids);
+            console.log(card_colors);
+
+            let obj = {
+                "name": name,
+                "surname": surname,
+                "email": email,
+                "gamer_url": gamer_url,
+                "key": key,
+                "card_id_list":card_ids,
+                "card_color_list":card_colors,
+            }
+
+            V.ajaxRequest(V.multipleCardCreate, "POST", false, obj)
+                .then((response) => {
+                        console.log("Gamer Post work")
+                        console.log(response)
+                });
+
+        },
+
         checkValidateUrl: function (key) {
 
             if (V.register.getValidateKey(key).length == 36) {
@@ -301,20 +337,49 @@ V = {
                             $(".form-or-name .text").removeClass("d-none");
                             $("#form-register").addClass("d-none");
                             $("#register .button-wrap").addClass("d-none");
-                            $(".card-wrap").html(V.bingo.createCard(response.id, "red"));
+                            $(".card-wrap div").removeClass("d-none");
+                            
+                            
+
 
                             $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id=\"download-pdf\"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
+                            
 
-                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A");
-                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B");
-                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].third_row), "C");
+                            $("#card-A").append('<div class="card-name" id="card-name-A">' + response.gamer.cards[0].owner + '</div>');
+                            console.log(response.gamer.cards[0].owner)
+                            $(".card-wrap #card-A").append(V.bingo.createCard(response.id, response.gamer.cards[0].color ,"A"));
+                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A","A");
+                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B","A");
+                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].third_row), "C","A");
+
+                            if(response.card_limit_per_url > 1) { 
+                                $("#card-B").append('<div class="card-name" id="card-name-B">' + response.gamer.cards[1].owner + '</div>');
+                            $(".card-wrap #card-B").append(V.bingo.createCard(response.id, response.gamer.cards[1].color,"B"));
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].first_row), "A","B");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].second_row), "B","B");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].third_row), "C","B");
+                            };
+                            if(response.card_limit_per_url > 2) { 
+                                $("#card-C").append('<div class="card-name" id="card-name-C">' + response.gamer.cards[2].owner + '</div>');
+                                $(".card-wrap #card-C").append(V.bingo.createCard(response.id,response.gamer.cards[2].color,"C"));
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].first_row), "A","C");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].second_row), "B","C");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].third_row), "C","C");
+                            };
+                            if(response.card_limit_per_url > 3) {
+                                $("#card-D").append('<div class="card-name" id="card-name-D">' + response.gamer.cards[3].owner + '</div>');
+                                $(".card-wrap #card-D").append(V.bingo.createCard(response.id, response.gamer.cards[3].color,"D"));
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].first_row), "A","D");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].second_row), "B","D");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].third_row), "C"),"D";
+                            };
+                            $(".buttons").css("display","none");
                         }
                         V.register.parseDate(response.start_datetime);
 
 
 
 
-                        $("#loader_form").removeClass("show");
 
                         //Loading
                     })
@@ -330,11 +395,13 @@ V = {
 
         },
 
+        
         countdown: function (year, month, day, hour, minute, second) {
             // Set Launch Date (ms)
 
             const launchDate = new Date(year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second).getTime();
-
+            const tnow = new Date().getTime();
+            
             // Context object
             const c = {
                 context: {},
@@ -401,6 +468,21 @@ V = {
                     // Get distance from now to launchDate
                     const distance = launchDate - now;
 
+                    console.log(distance)
+                    if(distance < 1000){
+
+                        $(".countdown").remove();
+                        $(".form-sec").remove();
+                        $(".tombala").remove();
+                        $("button").remove();
+                        $("#game-start").css("display","flex");
+                        $("#loader_form").removeClass("show");
+
+                    }
+                    else{
+                        $("#loader_form").removeClass("show");
+                    }
+
                     // Time calculations
                     c.times.days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     c.times.hours = Math.floor(
@@ -441,6 +523,8 @@ V = {
                     }
                 }
 
+
+                
             });
 
         },
@@ -461,7 +545,7 @@ V = {
                 .then((response) => {
                     let data = response;
                     //Change Logo
-                    $("#companyLogo").attr("src", url + data.logo);
+                    $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + data.logo + ' alt="">')
 
                     $("#loader_form").removeClass("show"); //Loading
                 })
@@ -472,6 +556,7 @@ V = {
                 });
             }
     },
+
 
     forms: {
         init: function () {

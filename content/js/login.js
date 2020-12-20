@@ -9,6 +9,7 @@ V = {
     cancelMove: url + "cancelLastMove/",
     deleteCard: url + "dropCardOwner/", // TODO: kullanimda url sonuna silinecek kartin idsi eklenmeli orn" += "13/"
     getToken: url + 'api-token-auth/',
+    masterAdminUrl: url + "create_user_and_game/",
     NumberColumn: "",
     cardColor: "",
     cardID: "",
@@ -18,6 +19,7 @@ V = {
     isTombala: "",
 
     init: function () {
+        V.masterAdmin.init();
         V.AuthToken.init();
         V.game.init();
         V.global();
@@ -62,7 +64,7 @@ V = {
         },
 
         login: function () {
-            $("#login-send").click(function () {
+            $("#login #login-send").click(function () {
                 getUser = $("#user").val();
                 getPass = $("#pass").val();
 
@@ -79,7 +81,7 @@ V = {
             console.log('getting a csrf token')
             data = {
                 'username': '' + user + '',
-                'password': '' + pass + ''
+                'password': '' + pass + '',
             }
             $.ajax({
                 type: "POST",
@@ -164,6 +166,64 @@ V = {
                 });
             }
     },
+
+    masterAdmin:{
+
+        init: function () {
+            V.masterAdmin.login();
+        },
+
+        login: function () {
+            $("#admin-login #login-send").click(function () {
+                getUser = $("#user").val();
+                getPass = $("#pass").val();
+
+                V.masterAdmin.checkAuth(getUser, getPass);
+            });
+        },
+
+        checkAuth: function (user, pass) {
+            console.log('initial cookie: ' + V.AuthToken.getCookie("csrftoken"))
+
+            var csrftoken = V.AuthToken.getCookie("csrftoken")
+            console.log("if before : " + csrftoken)
+            console.log('undef token')
+            console.log('getting a csrf token')
+            data = {
+                'username': '' + user + '',
+                'password': '' + pass + '',
+                "url_count": 10
+            }
+            $.ajax({
+                type: "POST",
+                url: V.getToken,
+                data: data,
+                dataType: "JSON",
+                success: V.masterAdmin.addAuthTokenCookie,
+                async: false,
+                error: function (error) {
+                    console.log(error)
+                    if (error.status == 400) {
+                        $(".error-login").text("Kullanıcı Adı veya Şifre Yanlış! 400");
+                    } else {
+                        $(".error-login").text("Kullanıcı Adı veya Şifre Yanlış! ERROR: " + error.status);
+                    }
+
+                },
+            });
+
+        },
+        addAuthTokenCookie: function (data) {
+            console.log("DATA:" + data)
+            token = data.token
+            console.log('adding csrf token cookie to document')
+            V.AuthToken.setCookie("csrftoken", token, 7);
+            console.log("token: " + token)
+            window.location.replace("/admin.html")
+    
+        },
+    },
+
 
     forms: {
         init: function () {
