@@ -155,7 +155,7 @@ V = {
                 .then((response) => {
                     let data = response;
                     //Change Logo
-                    $("#companyLogo").attr("src", url + data.logo);
+                    $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + data.logo + '" alt="">')
 
                     $("#loader_form").removeClass("show"); //Loading
                 })

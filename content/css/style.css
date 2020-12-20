@@ -390,6 +390,7 @@ footer{
 
 .buttons{
     margin-top:35px;
+    margin-bottom: 35px;
     justify-content: center;
     display:flex;
 }
@@ -739,6 +740,10 @@ select {
         display:flex;
         margin:35px 0;
     }
+
+    #register .t-card{
+        margin:5px 0;
+    }
     
     .t-card li{
         background:#fff;
@@ -1063,7 +1068,7 @@ margin-bottom: 25px;
     #register .card-name{
         font-size:28px;
         text-align: center;
-        margin-top:35px;
+        margin-top:20px;
         -webkit-text-stroke-width: 1px;
         -webkit-text-stroke-color: black;
         color:tomato;

@@ -181,21 +181,6 @@ V = {
             $(".game-screen").addClass("animate__animated animate__fadeIn");
         });
 
-        //Random Button Display 
-
-        $("#round-check").click(function (){
-            randomCheck = document.getElementById('round-check')
-            if (randomCheck.checked == true){
-                $("#random-isaretle").removeClass("d-none");
-                $("#isaretle").addClass("d-none");
-                $("#number-select").addClass("click-block");
-                $(".round input[type=checkbox]").prop('checked',false);
-               } else {
-                 $("#random-isaretle").addClass("d-none");
-                $("#isaretle").removeClass("d-none");
-                $("#number-select").removeClass("click-block");
-               }
-        });
 
         
  
@@ -309,6 +294,7 @@ V = {
             V.ajaxRequest(V.gameStatus, 'GET')
                 .then((response) => {
                     let data = response;
+                    $("#post-picked-numbers .round input").removeAttr("checked");
                     $("input").removeAttr("disabled")
                     // Seçilen Numaralar Disabled Yapılıyor
                     $(eval(data.picked_numbers)).each(function (index, value) {
@@ -317,11 +303,25 @@ V = {
                     $(data.last_three_moves).each(function (index, value) {
                         $(".last-number .number" + index).text(value);
                     });
-
                     //Game Text
                     $("#gameText").text(response.game_text);
                     //Change Logo
-                    $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + data.logo + ' alt="">')
+                    $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + data.logo + '" alt="">')
+                    
+                    //Random Button Show
+                    $("input[name='random_token_select']").attr( 'checked', response.random_token_select )
+                    
+                    //Random Button Display 
+                    if (response.random_token_select == true){
+                    $("#random-isaretle").removeClass("d-none");
+                    $("#isaretle").addClass("d-none");
+                    $("#number-select").addClass("click-block");
+                    $(".round input[type=checkbox]").prop('checked',false);
+                    } else {
+                    $("#random-isaretle").addClass("d-none");
+                    $("#isaretle").removeClass("d-none");
+                    $("#number-select").removeClass("click-block");
+                    }
 
                     $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
                     $(".wrap .num").removeClass("win win2 win-bingo");
@@ -393,32 +393,38 @@ V = {
                     if (error.status == 403) {
                         $("#loader_form").addClass("show");
                         $("#loader_form .error-text").text("Giriş Başarısız. Error! 403");
-                        setTimeout(function () {
-                            window.location.replace("/login.html");
-                        }, 3000)
+                        window.location.replace("/login.html");
+
                     } else if (error.status == 0) {
                         $("#loader_form").addClass("show");
                         $("#loader_form .error-text").text("İnternet Erişimini Kontrol Ediniz! Error: 0");
-                        setTimeout(function () {
-                            window.location.replace("/login.html");
-                        }, 3000)
+                        window.location.replace("/login.html");
+
                     } else {
                         $("#loader_form").addClass("show");
                         $("#loader_form .error-text").text("Giriş Başarısız!");
-                        setTimeout(function () {
-                            window.location.replace("/login.html");
-                        }, 3000)
+                        window.location.replace("/login.html");
+
                     }
                 });
         },
         clickBingo: function () {
             $("#isaretle").click(function () {
-                $("#loader_form").addClass("show"); //Loading
-                let obj = {
-                    "number": $('.picked:checked').val(),
+                var selectNumber = 0;
+                selectNumber = $('.picked:checked').val();
+
+                if(selectNumber == undefined){
+                    alert("Lütfen bir numara seçiniz!")
                 }
-                let content = "";
-                V.ajaxRequest(V.makeMove, 'POST', obj)
+                if(selectNumber != undefined)
+                {
+                $("#loader_form").addClass("show"); //Loading
+                $('.round input[type=checkbox]').removeAttr('checked');
+                    let obj = {
+                        "number": selectNumber,
+                    }
+
+                    V.ajaxRequest(V.makeMove, 'POST', obj)
                     .then((response) => {
                         let data = response;
                         // Seçilen Numaralar Disabled Yapılıyor
@@ -518,6 +524,7 @@ V = {
                         console.log(error)
                         $("#loader_form").removeClass("show"); //Loading
                     });
+                }
 
             });
 
@@ -631,10 +638,11 @@ V = {
             });
         },
         moveBack: function () {
-            $("#loader_form").addClass("show"); //Loading
+            
             $("#go-back").click(function () {
                 V.ajaxRequest(V.cancelMove, 'DELETE')
                     .then((response) => {
+                        $("#loader_form").addClass("show"); //Loading
                         $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
                         $(".wrap .count").empty();
                         $(".wrap .name").empty();
@@ -788,7 +796,7 @@ V = {
                 // var answer = window.confirm("Oyun geri dÃ¶nÃ¼lemez ÅŸekilde yeniden baÅŸlatÄ±lacaktÄ±r?");
                 //(baseUrl, requestType, sentData = null,async=false)
                 console.log('ins atcaz')
-                    V.ajaxRequest(V.downloadUrls, "GET")
+                    V.ajaxRequest(V.generateUrl, "GET")
                     .then((response) => {
                         // TODO: nedense buraya girmiyo amk kodu
                         console.log('satir 660')
@@ -861,12 +869,13 @@ V = {
                 
                 V.ajaxRequest(V.adminGameData, "GET", null , false)
                 .then((response) => {
-                    // $("input[name='company_name']").val(response.company_name);
+                  
                     $("input[name='game_text']").val(response.game_text);
                     $("input[name='register_text']").val(response.register_text);
                     $("input[name='webinar_link']").val(response.webinar_link);
                     $("input[name='disp_webinar_link_dt']").val(V.admin.combDate(response.disp_webinar_link_dt));
                     $("input[name='start_datetime']").val(V.admin.combDate(response.start_datetime));
+
                     
                     V.gameOwner = response.owner;
                     V.gameID = response.id;
@@ -886,6 +895,11 @@ V = {
                 e.preventDefault();    
                 var formData = new FormData(this);
             
+                if ($('#random_token_select').is(":checked") ){checkBox = true;}
+                else{checkBox = false;}
+                formData.append('random_token_select', checkBox);
+
+
                 $.ajax({
                     url: V.gamesUrl + V.gameID + "/",
                     type: 'PUT',
@@ -896,7 +910,8 @@ V = {
                     success: function (data) {
 
                         alert("Başarıyla kaydedildi.");
-
+                        // location.reload();
+                        console.log(data)
                         location.reload();
 
                     },

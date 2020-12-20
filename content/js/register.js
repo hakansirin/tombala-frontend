@@ -35,6 +35,9 @@ V = {
     card_C_color:"",
     card_D_color:"",
     dateDistance:"",
+    Key:"",
+    colors:["blue", "yellow", "green", "pink", "darkblue", "red"],
+    cardLimit:"",
 
     init: function () {
         V.global();
@@ -131,14 +134,30 @@ V = {
            
         },
         changeColor: function (letter) {
-            V.color = ["blue", "yellow", "green", "pink", "darkblue", "red"]
-            colorIndex = 0;
+
             $(document).on('click', "#change-color-"+letter, function () {
-                var colorIndex = Math.floor((Math.random() * 6) + 0);
+                var currentColor = $("#card-" + letter + " ul").attr("class");
+                console.log(currentColor)
+                currentColor = currentColor.replace("t-card ","");
+
                 $("#card-"+letter+" ul").removeAttr('class').attr('class', '');
-                $("#card-"+letter+" ul").addClass('t-card ' + V.color[colorIndex]);
+                $("#card-"+letter+" ul").addClass('t-card ' + V.buttons.randomExcet(currentColor));
+
             });
+
+            
+            
         },
+
+        randomExcet: function (color=NaN) { 
+            color_set = new Set(V.colors)
+            color_set.delete(color)
+            rest_colors = Array.from(color_set);
+            returnColor = rest_colors[Math.floor(Math.random() * rest_colors.length)];
+            console.log(color + " - " + returnColor)
+            return returnColor;
+         },
+
         changeCard:function (letter) { 
             $(document).on('click', "#change-card-" + letter, function () {
                 dontChangeColor = $("#card-"+letter+" ul").attr('class').replace("t-card","");
@@ -179,6 +198,7 @@ V = {
             validateKey = url.replace("key", "");
             validateKey = validateKey.replace("?", "");
             validateKey = validateKey.replace("=", "");
+            if (validateKey.length > 36) {validateKey = validateKey.substring(0,36);}
 
             return validateKey;
         },
@@ -202,7 +222,7 @@ V = {
             V.ajaxRequest(url + V.cardUrl, "POST", false)
                 .then((response) => {
 
-                    console.log("newCARD()");
+                    console.log("newCARD("+letter+")");
                     console.log(response);
 
                     
@@ -296,16 +316,19 @@ V = {
                 .then((response) => {
                         console.log("Gamer Post work")
                         console.log(response)
+                        location.reload();
+                        
                 });
 
         },
 
         checkValidateUrl: function (key) {
 
-            if (V.register.getValidateKey(key).length == 36) {
-                V.ajaxRequest(url + V.validateUrl + V.register.getValidateKey(key) + "/", "GET", true)
+            V.Key = V.register.getValidateKey(key);
+            if (V.Key.length == 36) {
+                V.ajaxRequest(url + V.validateUrl + V.Key + "/", "GET", true)
                     .then((response) => {
-                        console.log("success")
+                        console.log("checkValidateUrl Success ")
                         console.log(response)
 
                         V.CompanyName = response.company_name;
@@ -314,9 +337,22 @@ V = {
                         V.start_datetime = response.start_datetime;
                         V.webinar_link = response.webinar_link;
                         V.disp_webinar_link_dt = response.disp_webinar_link_dt;
-                    
+
+
+                        V.cardLimit = response.card_limit_per_url;
+                        console.log("card limit" + V.cardLimit)
+                        //Change Logo
+                        $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + response.logo + '" alt="">')
+
+                        //Family Data - Card Limit
+                        $("#family option").remove();
+                        $("#family").append('<option value="1">1</option>')
+                        if(V.cardLimit > 1) { $("#family").append('<option value="2">2</option>') };
+                        if(V.cardLimit > 2) { $("#family").append('<option value="3">3</option>') };
+                        if(V.cardLimit > 3) { $("#family").append('<option value="4">4</option>') };
+                        
                         $(".register-text").text(V.register_text);
-                        $("#companyLogo").attr("src", url + V.logo);
+                        $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + response.logo + '" alt="">')
 
                         // Register NO
                         if (response.gamer == null) {
@@ -327,19 +363,18 @@ V = {
                             V.GamersURLID = response.id;
 
                             V.register.newCard("A","red");
-                            V.register.newCard("B","blue");
-                            V.register.newCard("C","yellow");
-                            V.register.newCard("D","pink");
-
+                            if(V.cardLimit > 1) { V.register.newCard("B","blue"); };
+                            if(V.cardLimit > 2) { V.register.newCard("C","yellow"); };
+                            if(V.cardLimit > 3) { V.register.newCard("D","pink"); };
+                            
                         }
                         // Register YES
                         else {
+                            
                             $(".form-or-name .text").removeClass("d-none");
                             $("#form-register").addClass("d-none");
                             $("#register .button-wrap").addClass("d-none");
                             $(".card-wrap div").removeClass("d-none");
-                            
-                            
 
 
                             $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id=\"download-pdf\"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
@@ -352,43 +387,47 @@ V = {
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B","A");
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].third_row), "C","A");
 
-                            if(response.card_limit_per_url > 1) { 
+                            if(response.gamer.cards.length > 1 ) { 
                                 $("#card-B").append('<div class="card-name" id="card-name-B">' + response.gamer.cards[1].owner + '</div>');
                             $(".card-wrap #card-B").append(V.bingo.createCard(response.id, response.gamer.cards[1].color,"B"));
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[1].first_row), "A","B");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[1].second_row), "B","B");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[1].third_row), "C","B");
                             };
-                            if(response.card_limit_per_url > 2) { 
+                            if(response.gamer.cards.length > 2) { 
                                 $("#card-C").append('<div class="card-name" id="card-name-C">' + response.gamer.cards[2].owner + '</div>');
                                 $(".card-wrap #card-C").append(V.bingo.createCard(response.id,response.gamer.cards[2].color,"C"));
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[2].first_row), "A","C");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[2].second_row), "B","C");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[2].third_row), "C","C");
                             };
-                            if(response.card_limit_per_url > 3) {
+                            if(response.gamer.cards.length > 3) {
                                 $("#card-D").append('<div class="card-name" id="card-name-D">' + response.gamer.cards[3].owner + '</div>');
                                 $(".card-wrap #card-D").append(V.bingo.createCard(response.id, response.gamer.cards[3].color,"D"));
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[3].first_row), "A","D");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[3].second_row), "B","D");
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].third_row), "C"),"D";
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].third_row), "C","D");
                             };
                             $(".buttons").css("display","none");
+
                         }
                         V.register.parseDate(response.start_datetime);
 
 
 
 
+                        $("#loader_form").removeClass("show")
 
                         //Loading
                     })
                     .catch((error) => {
                         console.log("V.register.checkValidateUrl() - error get")
                         console.log(error)
+                        $("#loader_form .error-text").text("Validate Error!");
 
                     });
-            } else {
+            } 
+            else {
                 console.log("Wrong KEY!!!")
                 $("#loader_form .error-text").text("Lütfen size verilen özel linkten giriş yapınız!");
             }
@@ -468,7 +507,6 @@ V = {
                     // Get distance from now to launchDate
                     const distance = launchDate - now;
 
-                    console.log(distance)
                     if(distance < 1000){
 
                         $(".countdown").remove();
@@ -537,6 +575,7 @@ V = {
     game : {
 
         init:function () { 
+           
          },
 
         setData: function () {
@@ -544,8 +583,9 @@ V = {
             V.ajaxRequest(V.validateUrl, 'GET')
                 .then((response) => {
                     let data = response;
-                    //Change Logo
-                    $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + data.logo + ' alt="">')
+
+                    
+
 
                     $("#loader_form").removeClass("show"); //Loading
                 })
