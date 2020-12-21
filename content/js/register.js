@@ -1,4 +1,4 @@
-url = "http://ec2-3-17-77-133.us-east-2.compute.amazonaws.com:8000/"
+url = "https://sirkettombalasi.com:8443/"
 
 V = {
     urlData: "", // Global değişkenler
@@ -111,24 +111,40 @@ V = {
                     $("#card-B").addClass("d-none");
                     $("#card-C").addClass("d-none");
                     $("#card-D").addClass("d-none");
+                    $("#card-name-A").removeClass("d-none");
+                    $("#card-name-B").addClass("d-none");
+                    $("#card-name-C").addClass("d-none");
+                    $("#card-name-D").addClass("d-none");
                 }
                 if (V.familyData == 2) {
                     $("#card-A").removeClass("d-none");
                     $("#card-B").removeClass("d-none");
                     $("#card-C").addClass("d-none");
                     $("#card-D").addClass("d-none");
+                    $("#card-name-A").removeClass("d-none");
+                    $("#card-name-B").removeClass("d-none");
+                    $("#card-name-C").addClass("d-none");
+                    $("#card-name-D").addClass("d-none");
                 }
                 if (V.familyData == 3) {
                     $("#card-A").removeClass("d-none");
                     $("#card-B").removeClass("d-none");
                     $("#card-C").removeClass("d-none");
                     $("#card-D").addClass("d-none");
+                    $("#card-name-A").removeClass("d-none");
+                    $("#card-name-B").removeClass("d-none");
+                    $("#card-name-C").removeClass("d-none");
+                    $("#card-name-D").addClass("d-none");
                 }
                 if (V.familyData == 4) {
                     $("#card-A").removeClass("d-none");
                     $("#card-B").removeClass("d-none");
                     $("#card-C").removeClass("d-none");
                     $("#card-D").removeClass("d-none");
+                    $("#card-name-A").removeClass("d-none");
+                    $("#card-name-B").removeClass("d-none");
+                    $("#card-name-C").removeClass("d-none");
+                    $("#card-name-D").removeClass("d-none");
                 }
             });
 
@@ -140,9 +156,22 @@ V = {
                 var currentColor = $("#card-" + letter + " ul").attr("class");
                 console.log(currentColor)
                 currentColor = currentColor.replace("t-card ", "");
+                newColor = V.buttons.randomExcet(currentColor);
+                if (letter == "A") {
+                    V.card_A_color = newColor
+                }
+                if (letter == "B") {
+                    V.card_B_color = newColor
+                }
+                if (letter == "C") {
+                    V.card_C_color = newColor
+                }
+                if (letter == "D") {
+                    V.card_D_color = newColor
+                }
 
                 $("#card-" + letter + " ul").removeAttr('class').attr('class', '');
-                $("#card-" + letter + " ul").addClass('t-card ' + V.buttons.randomExcet(currentColor));
+                $("#card-" + letter + " ul").addClass('t-card ' + newColor);
 
             });
 
@@ -155,7 +184,6 @@ V = {
             color_set.delete(color)
             rest_colors = Array.from(color_set);
             returnColor = rest_colors[Math.floor(Math.random() * rest_colors.length)];
-            console.log(color + " - " + returnColor)
             return returnColor;
         },
 
@@ -192,7 +220,6 @@ V = {
             });
 
         },
-
 
         getValidateKey: function (url) {
             validateKey = "";
@@ -264,48 +291,6 @@ V = {
                 });
         },
 
-        newGamer: function (name, surname, email, gamer_url, key, cards) {
-
-            console.log("CARD::")
-            console.log(cards)
-
-            let obj = {
-                "name": name,
-                "surname": surname,
-                "email": email,
-                "gamer_url": gamer_url,
-                "key": key,
-            }
-
-            V.ajaxRequest(url + V.gamersUrl, "POST", false, obj)
-                .then((response) => {
-                        console.log("Gamer Post work")
-                        console.log(response)
-
-                        V.GamersID = response.id;
-
-                        let obj = {
-                            "gamer": V.GamersID,
-                            "key": V.register.getValidateKey(location.search),
-                            "color": V.currentColor
-                        }
-                        console.log("Put Object :" + obj)
-                        V.ajaxRequest(url + V.cardUrl + V.newCardID + "/", "PUT", false, obj)
-                            .then((response) => {
-
-                                location.reload();
-
-                            })
-                            .catch((error) => {
-                                console.log("Card - PUT ")
-                                console.log(error)
-                            });
-                    }
-
-                )
-
-        },
-
         newGamerWithCard: function (name, surname, email, gamer_url, key) {
 
 
@@ -344,7 +329,51 @@ V = {
                 .then((response) => {
                     console.log("Gamer Post work")
                     console.log(response)
-                    location.reload();
+
+                    V.isRegister = true;
+                    $(".form-or-name .text").removeClass("d-none");
+                    $("#form-register").addClass("d-none");
+                    $("#register .button-wrap").addClass("d-none");
+                    $(".card-wrap div").removeClass("d-none");
+                    $("#card-name-A").empty();
+                    $("#card-name-B").empty();
+                    $("#card-name-C").empty();
+                    $("#card-name-D").empty();
+
+
+
+                    $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id=\"download-pdf\"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
+
+
+                    $("#card-name-A").html(response.gamer.cards[0].owner);
+                    console.log(response.gamer.cards[0].owner)
+                    $(".card-wrap #card-A").html(V.bingo.createCard(response.id, response.gamer.cards[0].color, "A"));
+                    V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A", "A");
+                    V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B", "A");
+                    V.bingo.getCinko(JSON.parse(response.gamer.cards[0].third_row), "C", "A");
+
+                    if (response.gamer.cards.length > 1) {
+                        $("#card-name-B").html(response.gamer.cards[1].owner);
+                        $(".card-wrap #card-B").html(V.bingo.createCard(response.id, response.gamer.cards[1].color, "B"));
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[1].first_row), "A", "B");
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[1].second_row), "B", "B");
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[1].third_row), "C", "B");
+                    };
+                    if (response.gamer.cards.length > 2) {
+                        $("#card-name-C").html(response.gamer.cards[2].owner);
+                        $(".card-wrap #card-C").html(V.bingo.createCard(response.id, response.gamer.cards[2].color, "C"));
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[2].first_row), "A", "C");
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[2].second_row), "B", "C");
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[2].third_row), "C", "C");
+                    };
+                    if (response.gamer.cards.length > 3) {
+                        $("#card-name-D").html(response.gamer.cards[3].owner);
+                        $(".card-wrap #card-D").html(V.bingo.createCard(response.id, response.gamer.cards[3].color, "D"));
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[3].first_row), "A", "D");
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[3].second_row), "B", "D");
+                        V.bingo.getCinko(JSON.parse(response.gamer.cards[3].third_row), "C", "D");
+                    };
+                    $(".buttons").css("display", "none");
 
                 });
 
@@ -366,7 +395,7 @@ V = {
                         V.webinar_link = response.webinar_link;
                         V.disp_webinar_link_dt = response.disp_webinar_link_dt;
 
-                   
+
                         V.cardLimit = response.card_limit_per_url;
                         console.log("card limit" + V.cardLimit)
                         //Change Logo
@@ -397,15 +426,50 @@ V = {
                             $(".form-or-name .text").addClass("d-none");
                             V.GamersURLID = response.id;
 
-                            V.register.newCard("A", "red");
-                            if (V.cardLimit > 1) {
-                                V.register.newCard("B", "blue");
+                            // V.register.newCard("A", "red");
+                            // if (V.cardLimit > 1) {
+                            //     V.register.newCard("B", "blue");
+                            // };
+                            // if (V.cardLimit > 2) {
+                            //     V.register.newCard("C", "yellow");
+                            // };
+                            // if (V.cardLimit > 3) {
+                            //     V.register.newCard("D", "pink");
+                            // };
+
+                            $("#card-name-A").text("Kart A");
+                            $(".card-wrap #card-A").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "A"));
+                            V.bingo.getCinko(JSON.parse(response.free_cards[0].first_row), "A", "A");
+                            V.bingo.getCinko(JSON.parse(response.free_cards[0].second_row), "B", "A");
+                            V.bingo.getCinko(JSON.parse(response.free_cards[0].third_row), "C", "A");
+                            V.card_A_id = response.free_cards[0].id;
+
+                            if (response.free_cards.length > 1) {
+                                $("#card-name-B").text("Kart B");
+                                $(".card-wrap #card-B").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "B"));
+                                V.bingo.getCinko(JSON.parse(response.free_cards[1].first_row), "A", "B");
+                                V.bingo.getCinko(JSON.parse(response.free_cards[1].second_row), "B", "B");
+                                V.bingo.getCinko(JSON.parse(response.free_cards[1].third_row), "C", "B");
+                                V.card_B_id = response.free_cards[1].id;
+
                             };
-                            if (V.cardLimit > 2) {
-                                V.register.newCard("C", "yellow");
+                            if (response.free_cards.length > 2) {
+                                $("#card-name-C").text("Kart C");
+                                $(".card-wrap #card-C").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "C"));
+                                V.bingo.getCinko(JSON.parse(response.free_cards[2].first_row), "A", "C");
+                                V.bingo.getCinko(JSON.parse(response.free_cards[2].second_row), "B", "C");
+                                V.bingo.getCinko(JSON.parse(response.free_cards[2].third_row), "C", "C");
+                                V.card_C_id = response.free_cards[2].id;
+
                             };
-                            if (V.cardLimit > 3) {
-                                V.register.newCard("D", "pink");
+                            if (response.free_cards.length > 3) {
+                                $("#card-name-D").text("Kart D");
+                                $(".card-wrap #card-D").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "D"));
+                                V.bingo.getCinko(JSON.parse(response.free_cards[3].first_row), "A", "D");
+                                V.bingo.getCinko(JSON.parse(response.free_cards[3].second_row), "B", "D");
+                                V.bingo.getCinko(JSON.parse(response.free_cards[3].third_row), "C", "D");
+                                V.card_D_id = response.free_cards[3].id;
+
                             };
 
                         }
@@ -416,12 +480,16 @@ V = {
                             $("#form-register").addClass("d-none");
                             $("#register .button-wrap").addClass("d-none");
                             $(".card-wrap div").removeClass("d-none");
+                            $("#card-name-A").empty();
+                            $("#card-name-B").empty();
+                            $("#card-name-C").empty();
+                            $("#card-name-D").empty();
 
 
                             $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id=\"download-pdf\"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
 
 
-                            $("#card-A").append('<div class="card-name" id="card-name-A">' + response.gamer.cards[0].owner + '</div>');
+                            $("#card-name-A").text(response.gamer.cards[0].owner);
                             console.log(response.gamer.cards[0].owner)
                             $(".card-wrap #card-A").append(V.bingo.createCard(response.id, response.gamer.cards[0].color, "A"));
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A", "A");
@@ -429,21 +497,21 @@ V = {
                             V.bingo.getCinko(JSON.parse(response.gamer.cards[0].third_row), "C", "A");
 
                             if (response.gamer.cards.length > 1) {
-                                $("#card-B").append('<div class="card-name" id="card-name-B">' + response.gamer.cards[1].owner + '</div>');
+                                $("#card-name-B").text(response.gamer.cards[1].owner);
                                 $(".card-wrap #card-B").append(V.bingo.createCard(response.id, response.gamer.cards[1].color, "B"));
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[1].first_row), "A", "B");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[1].second_row), "B", "B");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[1].third_row), "C", "B");
                             };
                             if (response.gamer.cards.length > 2) {
-                                $("#card-C").append('<div class="card-name" id="card-name-C">' + response.gamer.cards[2].owner + '</div>');
+                                $("#card-name-C").text(response.gamer.cards[2].owner);
                                 $(".card-wrap #card-C").append(V.bingo.createCard(response.id, response.gamer.cards[2].color, "C"));
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[2].first_row), "A", "C");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[2].second_row), "B", "C");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[2].third_row), "C", "C");
                             };
                             if (response.gamer.cards.length > 3) {
-                                $("#card-D").append('<div class="card-name" id="card-name-D">' + response.gamer.cards[3].owner + '</div>');
+                                $("#card-name-D").text(response.gamer.cards[3].owner);
                                 $(".card-wrap #card-D").append(V.bingo.createCard(response.id, response.gamer.cards[3].color, "D"));
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[3].first_row), "A", "D");
                                 V.bingo.getCinko(JSON.parse(response.gamer.cards[3].second_row), "B", "D");

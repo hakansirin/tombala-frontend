@@ -1,4 +1,4 @@
-url = "http://ec2-3-17-77-133.us-east-2.compute.amazonaws.com:8000/"
+url = "https://sirkettombalasi.com:8443/"
 
 V = {
     urlData: "", // Global değişkenler

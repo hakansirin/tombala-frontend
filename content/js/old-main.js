@@ -40,7 +40,7 @@ $(document).ready(function () {
 
     $.fn.funcGetPicked = function () {
             $.ajax({
-                url: 'http://ec2-3-17-77-133.us-east-2.compute.amazonaws.com:8000/gameStatus/1/',
+                url: 'https://sirkettombalasi.com:8443/gameStatus/1/',
                 dataType: 'json',
                 type: 'GET',
                 data: {}, 
@@ -91,7 +91,7 @@ $(document).ready(function () {
     
     $("#go-back").click(function () {
         $.ajax({
-            url: 'http://ec2-3-17-77-133.us-east-2.compute.amazonaws.com:8000/cancelLastMove/1/',
+            url: 'https://sirkettombalasi.com:8443/cancelLastMove/1/',
             dataType:'json',
             type: 'delete',
             success: function () {
@@ -105,7 +105,7 @@ $(document).ready(function () {
     $("#isaretle").click(function () {
         var post_picked_number = $('.picked:checked').val();
         $.ajax({
-            url: 'http://ec2-3-17-77-133.us-east-2.compute.amazonaws.com:8000/makeMove/1/',
+            url: 'https://sirkettombalasi.com:8443/makeMove/1/',
             dataType: 'json',
             type: 'POST',
             data: { 
