@@ -65,6 +65,21 @@ body{
     color:#fff;
     height:100vh
 }
+
+body.green{
+    background-color:#17362d;
+}
+body.red{
+    background-color:#760C29;
+}
+body.blue{
+    background-color:#0C6076;
+
+}
+body.darkblue{
+    background-color:#283545;
+}
+
 body#register{
     height:unset;
 }
@@ -93,10 +108,9 @@ body#register{
 
 .btn-main{
     margin:0 auto;
-    width:75%;
     display: block;
     border-radius: 15.5px;
-    padding:10px 15px;
+    padding:10px 40px;
     background: none;
     border:2px solid #fff;
     color:#fff;
@@ -478,7 +492,6 @@ footer{
 .form-group{
     display:block;
     width:100%;
-    padding:0 70px;
 }
 
 footer .right{
@@ -515,7 +528,7 @@ footer .right{
 .form-group label{
     margin-bottom: 5px;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: bold;
     font-stretch: normal;
     font-style: normal;
     line-height: 1.93;
@@ -546,7 +559,7 @@ select {
       width:100%;
   }
   .button-100 .btn-main{
-      width:80%;
+      width:50%;
       display: block;
       margin:0 auto;
   }
@@ -703,6 +716,9 @@ select {
         border-color: #ca5ea3;
         color: #a92b7c !important;
     }
+    .winner-card .t-card.pink .picked {
+        color: #f137ae !important;
+    }
     .winner-card .t-card.pink div:empty {
         background-color: #a92b7c;
     }
@@ -723,11 +739,17 @@ select {
     .winner-card .t-card.green div:empty {
         background-color: #649000;
     }
+    .winner-card .t-card.green .picked {
+        color: #88c300 !important;
+    }
     /* Color */
 
     .winner-card .t-card.red div {
         border-color: #e42853;
         color: #cd003c !important;
+    }
+    .winner-card .t-card.red .picked {
+        color: #ff004b !important;
     }
     .winner-card .t-card.red div:empty {
         background-color: #cd003c;
@@ -862,13 +884,6 @@ select {
 #login .form-sec .text{
     text-align: center;
     font-size:22px;
-}
-
-#quit{
-    position: absolute;
-    top: 70vh;
-    left: 0;
-    right: 0;
 }
 
 .error-login{
@@ -1033,7 +1048,7 @@ margin-bottom: 25px;
 
  #create-game .form-group{
      display:flex;
-     justify-content: center;
+     justify-content: space-evenly;
     }
 
     #create-game{
@@ -1041,7 +1056,8 @@ margin-bottom: 25px;
     }
 
     #create-game .form-actions .btn-main{
-        width:30%;
+        margin:unset;
+        margin-left: 10%;
     }
     #game-list {
         margin-top:35px;
@@ -1105,4 +1121,33 @@ margin-bottom: 25px;
 
 #register .buttons a{
     width: 35%;
+}
+
+.form-group.bg{
+    display:flex;
+}
+.switch{
+    margin-left: 40px;
+}
+#save-game-data{
+    margin:unset;
+    margin-left: auto !important;
+}
+.admin-screen {
+
+    height: 100%;
+}
+.admin-screen .bottom{
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+}
+#games-data{
+    padding-top:35px;
+}
+button:focus {
+    outline: unset !important;
+}
+#admin #sec1{
+    min-height: 100vh;
 }

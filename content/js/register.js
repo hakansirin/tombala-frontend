@@ -312,6 +312,7 @@ V = {
             card_ids = "[" + card_ids.toString() + "]";
             card_colors = "[" + card_colors.toString() + "]";
 
+            console.log("Gamer BEFORE Post Work")
             console.log(card_ids);
             console.log(card_colors);
 
@@ -327,7 +328,7 @@ V = {
 
             V.ajaxRequest(V.multipleCardCreate, "POST", false, obj)
                 .then((response) => {
-                    console.log("Gamer Post work")
+                    console.log("Gamer After Post Work")
                     console.log(response)
 
                     V.isRegister = true;
@@ -339,6 +340,10 @@ V = {
                     $("#card-name-B").empty();
                     $("#card-name-C").empty();
                     $("#card-name-D").empty();
+                    $("#card-A").empty();
+                    $("#card-B").empty();
+                    $("#card-C").empty();
+                    $("#card-D").empty();
 
 
 
@@ -437,38 +442,42 @@ V = {
                             //     V.register.newCard("D", "pink");
                             // };
 
-                            $("#card-name-A").text("Kart A");
-                            $(".card-wrap #card-A").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "A"));
+                            cardColor = V.buttons.randomExcet();
+                            $(".card-wrap #card-A").append(V.bingo.createCard(response.id, cardColor, "A"));
                             V.bingo.getCinko(JSON.parse(response.free_cards[0].first_row), "A", "A");
                             V.bingo.getCinko(JSON.parse(response.free_cards[0].second_row), "B", "A");
                             V.bingo.getCinko(JSON.parse(response.free_cards[0].third_row), "C", "A");
                             V.card_A_id = response.free_cards[0].id;
+                            V.card_A_color = V.buttons.randomExcet();
 
                             if (response.free_cards.length > 1) {
-                                $("#card-name-B").text("Kart B");
-                                $(".card-wrap #card-B").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "B"));
+                                cardColor = V.buttons.randomExcet();
+                                $(".card-wrap #card-B").append(V.bingo.createCard(response.id, cardColor, "B"));
                                 V.bingo.getCinko(JSON.parse(response.free_cards[1].first_row), "A", "B");
                                 V.bingo.getCinko(JSON.parse(response.free_cards[1].second_row), "B", "B");
                                 V.bingo.getCinko(JSON.parse(response.free_cards[1].third_row), "C", "B");
                                 V.card_B_id = response.free_cards[1].id;
+                                V.card_B_color = cardColor;
 
                             };
                             if (response.free_cards.length > 2) {
-                                $("#card-name-C").text("Kart C");
-                                $(".card-wrap #card-C").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "C"));
+                                cardColor = V.buttons.randomExcet();
+                                $(".card-wrap #card-C").append(V.bingo.createCard(response.id, cardColor, "C"));
                                 V.bingo.getCinko(JSON.parse(response.free_cards[2].first_row), "A", "C");
                                 V.bingo.getCinko(JSON.parse(response.free_cards[2].second_row), "B", "C");
                                 V.bingo.getCinko(JSON.parse(response.free_cards[2].third_row), "C", "C");
                                 V.card_C_id = response.free_cards[2].id;
+                                V.card_C_color = cardColor;
 
                             };
                             if (response.free_cards.length > 3) {
-                                $("#card-name-D").text("Kart D");
-                                $(".card-wrap #card-D").append(V.bingo.createCard(response.id, V.buttons.randomExcet(), "D"));
+                                cardColor = V.buttons.randomExcet();
+                                $(".card-wrap #card-D").append(V.bingo.createCard(response.id, cardColor, "D"));
                                 V.bingo.getCinko(JSON.parse(response.free_cards[3].first_row), "A", "D");
                                 V.bingo.getCinko(JSON.parse(response.free_cards[3].second_row), "B", "D");
                                 V.bingo.getCinko(JSON.parse(response.free_cards[3].third_row), "C", "D");
                                 V.card_D_id = response.free_cards[3].id;
+                                V.card_D_color = cardColor;
 
                             };
 
@@ -653,7 +662,7 @@ V = {
 
     bingo: {
         createCard: function (id, cardColor, letter) {
-            let content = " <ul id=\"user" + id + "\"  class=\"t-card " + cardColor + "\">\r\n<li id=\"column1\">\r\n<div id=\"A1\"><\/div>\r\n<div id=\"B1\"><\/div>\r\n<div id=\"C1\"><\/div>\r\n<\/li>\r\n<li id=\"column2\">\r\n<div id=\"A2\"><\/div>\r\n<div id=\"B2\"><\/div>\r\n<div id=\"C2\"><\/div>\r\n<\/li>\r\n<li id=\"column3\">\r\n<div id=\"A3\"><\/div>\r\n<div id=\"B3\"><\/div>\r\n<div id=\"C3\"><\/div>\r\n<\/li>\r\n<li id=\"column4\">\r\n<div id=\"A4\"><\/div>\r\n<div id=\"B4\"><\/div>\r\n<div id=\"C4\"><\/div>\r\n<\/li>\r\n<li id=\"column5\">\r\n<div id=\"A5\"><\/div>\r\n<div id=\"B5\"><\/div>\r\n<div id=\"C5\"><\/div>\r\n<\/li>\r\n<li id=\"column6\">\r\n<div id=\"A6\"><\/div>\r\n<div id=\"B6\"><\/div>\r\n<div id=\"C6\"><\/div>\r\n<\/li>\r\n<li id=\"column7\">\r\n<div id=\"A7\"><\/div>\r\n<div id=\"B7\"><\/div>\r\n<div id=\"C7\"><\/div>\r\n<\/li>\r\n<li id=\"column8\">\r\n<div id=\"A8\"><\/div>\r\n<div id=\"B8\"><\/div>\r\n<div id=\"C8\"><\/div>\r\n<\/li>\r\n<li id=\"column9\">\r\n<div id=\"A9\"><\/div>\r\n<div id=\"B9\"><\/div>\r\n<div id=\"C9\"><\/div>\r\n<\/li>\r\n<\/ul> <div class=\"buttons\"><a id=\"change-card-" + letter + "\" class=\"btn-main\">Rakam Degistir<\/a><a id=\"change-color-" + letter + "\" class=\"btn-main\">Renk Degistir<\/a><\/div> ";
+            let content = " <ul id=\"user" + id + "\"  class=\"t-card " + cardColor + "\">\r\n<li id=\"column1\">\r\n<div id=\"A1\"><\/div>\r\n<div id=\"B1\"><\/div>\r\n<div id=\"C1\"><\/div>\r\n<\/li>\r\n<li id=\"column2\">\r\n<div id=\"A2\"><\/div>\r\n<div id=\"B2\"><\/div>\r\n<div id=\"C2\"><\/div>\r\n<\/li>\r\n<li id=\"column3\">\r\n<div id=\"A3\"><\/div>\r\n<div id=\"B3\"><\/div>\r\n<div id=\"C3\"><\/div>\r\n<\/li>\r\n<li id=\"column4\">\r\n<div id=\"A4\"><\/div>\r\n<div id=\"B4\"><\/div>\r\n<div id=\"C4\"><\/div>\r\n<\/li>\r\n<li id=\"column5\">\r\n<div id=\"A5\"><\/div>\r\n<div id=\"B5\"><\/div>\r\n<div id=\"C5\"><\/div>\r\n<\/li>\r\n<li id=\"column6\">\r\n<div id=\"A6\"><\/div>\r\n<div id=\"B6\"><\/div>\r\n<div id=\"C6\"><\/div>\r\n<\/li>\r\n<li id=\"column7\">\r\n<div id=\"A7\"><\/div>\r\n<div id=\"B7\"><\/div>\r\n<div id=\"C7\"><\/div>\r\n<\/li>\r\n<li id=\"column8\">\r\n<div id=\"A8\"><\/div>\r\n<div id=\"B8\"><\/div>\r\n<div id=\"C8\"><\/div>\r\n<\/li>\r\n<li id=\"column9\">\r\n<div id=\"A9\"><\/div>\r\n<div id=\"B9\"><\/div>\r\n<div id=\"C9\"><\/div>\r\n<\/li>\r\n<\/ul> <div class=\"buttons\"><a id=\"change-card-" + letter + "\" class=\"btn-main\">Rakam Değiştir<\/a><a id=\"change-color-" + letter + "\" class=\"btn-main\">Renk Değiştir<\/a><\/div> ";
 
             return content;
         },

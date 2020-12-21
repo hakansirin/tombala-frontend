@@ -139,110 +139,121 @@
                             <div class="admin-screen">
                                 <div id="admin-panel">
                                     <form id="games-data" enctype="multipart/form-data" class="form-horizontal" novalidate="">
-                                        <fieldset>
+                                        <div class="container">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-9">
+                                                    <fieldset>
+                                                        <div class="form-group ">
+            
+                                                            <label class="col-sm-12 control-label ">
+                                                                Oyun içi yazı
+                                                            </label>
+                                                            <div class="col-sm-12">
+                                                                <textarea name="game_text" class="form-control"  cols="30" rows="5"></textarea>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="form-group ">
+                                                            <label class="col-sm-12 control-label ">
+                                                                Kayıt sayfası karşılama yazısı
+                                                            </label>
+            
+                                                            <div class="col-sm-12">
+                                                             
+                                                                <textarea name="register_text" type="textarea" class="form-control"  cols="30" rows="5"></textarea>
 
-                                           
-
-                                            <div class="form-group ">
-
-                                                <label class="col-sm-12 control-label ">
-                                                    Oyun içi yazı
-                                                </label>
-
-
-                                                <div class="col-sm-10">
-                                                    <input name="game_text" class="form-control" type="text"
-                                                        value="">
-
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="form-group d-none">
+            
+                                                            <label class="col-sm-12 control-label ">
+                                                                Webinar link
+                                                            </label>
+            
+            
+                                                            <div class="col-sm-12">
+                                                                <input name="webinar_link" class="form-control" type="text"
+                                                                    value="">
+            
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group d-none">
+            
+                                                            <label class="col-sm-12 control-label ">
+                                                                Webinar Linki ne zaman gösterilsin?
+                                                            </label>
+            
+                                                            <div class="col-sm-10">
+                                                                <input name="disp_webinar_link_dt" class="form-control"
+                                                                    type="datetime-local" value="">
+            
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="form-group">
+            
+                                                            <label class="col-sm-12 control-label ">
+                                                                Oyun Başlangıç Tarihi
+                                                            </label>
+            
+            
+                                                            <div class="col-sm-12">
+                                                                <input name="start_datetime" class="form-control"
+                                                                    type="datetime-local" value="">
+            
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="form-group ">
+            
+                                                            <label class="col-sm-12 control-label ">
+                                                                Logo
+                                                            </label>
+            
+            
+                                                            <div class="col-sm-12">
+                                                                <input name="logo" type="file" value="null">
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="form-group ">
+                                                            <label class="col-sm-12 control-label ">
+                                                            Rastgele Rakam Çek Butonu Gösterilsin mi?
+                                                            <label class="switch">
+                                                                <input name="random_token_select" id="random_token_select" type="checkbox" checked>
+                                                                <span class="slider roundswitch"></span>
+                                                              </label>
+                                                            </label>  
+                                                         
+                                                        </div>
+            
+                                                        <div class="form-group bg">
+                                                            <label class="col-sm-4 control-label" for="bgcolor">Arkaplan Rengi: </label>
+                                                            <select id="background_color" name="background_color" class=" col-sm-4 form-control">
+                                                                <option value="green">Yeşil</option>
+                                                                <option value="red">Kırmızı</option>
+                                                                <option value="blue">Mavi</option>
+                                                                <option value="darkblue">Koyu Mavi</option>
+                                                              </select>
+                                                        </div>
+            
+                                                        <div class="form-group d-none">
+                                                            <div class="col-sm-10">
+                                                                <input id="game-owner" name="owner" class="form-control" type="text"
+                                                                    value="">
+                                                            </div>
+                                                        </div>
+            
+            
+                                                        <div class="form-actions">
+                                                            <button type="submit" id="save-game-data" class="btn-main">Kaydet</button>
+                                                        </div>
+                                                    </fieldset>
                                                 </div>
                                             </div>
+                                        </div>
 
-                                            <div class="form-group ">
-
-                                                <label class="col-sm-12 control-label ">
-                                                    Kayıt sayfası karşılama yazısı
-                                                </label>
-
-                                                <div class="col-sm-10">
-                                                    <input name="register_text" class="form-control" type="text"
-                                                        value="">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group d-none">
-
-                                                <label class="col-sm-12 control-label ">
-                                                    Webinar link
-                                                </label>
-
-
-                                                <div class="col-sm-10">
-                                                    <input name="webinar_link" class="form-control" type="text"
-                                                        value="">
-
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group d-none">
-
-                                                <label class="col-sm-12 control-label ">
-                                                    Webinar Linki ne zaman gösterilsin?
-                                                </label>
-
-                                                <div class="col-sm-10">
-                                                    <input name="disp_webinar_link_dt" class="form-control"
-                                                        type="datetime-local" value="">
-
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group ">
-
-                                                <label class="col-sm-12 control-label ">
-                                                    Oyun Başlangıç Tarihi
-                                                </label>
-
-
-                                                <div class="col-sm-10">
-                                                    <input name="start_datetime" class="form-control"
-                                                        type="datetime-local" value="">
-
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group ">
-
-                                                <label class="col-sm-12 control-label ">
-                                                    Logo
-                                                </label>
-
-
-                                                <div class="col-sm-10">
-                                                    <input name="logo" type="file" value="null">
-                                                </div>
-                                            </div>
-                                            <div class="form-group ">
-                                                <label class="col-sm-12 control-label ">
-                                                Rastgele Rakam Çek Butonu Gösterilsin mi?
-                                                <label class="switch">
-                                                    <input name="random_token_select" id="random_token_select" type="checkbox" checked>
-                                                    <span class="slider roundswitch"></span>
-                                                  </label>
-                                                </label>  
-                                             
-                                            </div>
-                                            <div class="form-group d-none">
-                                                <div class="col-sm-10">
-                                                    <input id="game-owner" name="owner" class="form-control" type="text"
-                                                        value="">
-                                                </div>
-                                            </div>
-
-
-                                            <div class="form-actions">
-                                                <button type="submit" id="save-game-data" class="btn-main">Kaydet</button>
-                                            </div>
-                                        </fieldset>
                                     </form>
 
 
@@ -250,12 +261,14 @@
                             </div>
 
                         </div>
-                        <div class="col-md-2 p-0">
+                        <div class="col-md-2">
                             <div class="game-screen">
                                 <a id="isaretle" class="btn-main d-none">İşaretle</a>
                             </div>
                             <div class="admin-screen">
-                                <a class="btn-main" id="quit">Oturumu Kapat</a>
+                                <div class="bottom">
+                                    <a class="btn-main" id="quit">Oturumu Kapat</a>
+                                </div>
                             </div>
 
                         </div>

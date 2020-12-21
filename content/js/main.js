@@ -294,6 +294,7 @@ V = {
             V.ajaxRequest(V.gameStatus, 'GET')
                 .then((response) => {
                     let data = response;
+                    console.log(response)
                     $("#post-picked-numbers .round input").removeAttr("checked");
                     $("input").removeAttr("disabled")
                     // Seçilen Numaralar Disabled Yapılıyor
@@ -307,6 +308,14 @@ V = {
                     $("#gameText").text(response.game_text);
                     //Change Logo
                     $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + data.logo + '" alt="">')
+                    //Background Color 
+                    $("body").addClass(response.background_color);
+
+                    //Change BG
+                    $('#background_color').change(function() {
+                        $("body").removeClass();
+                        $("body").addClass($(this).val());
+                    });
                     
                     //Random Button Show
                     $("input[name='random_token_select']").attr( 'checked', response.random_token_select )
@@ -393,12 +402,12 @@ V = {
                     if (error.status == 403) {
                         $("#loader_form").addClass("show");
                         $("#loader_form .error-text").text("Giriş Başarısız. Error! 403");
-                        window.location.replace("/login.html");
+                     window.location.replace("/login.html");
 
                     } else if (error.status == 0) {
                         $("#loader_form").addClass("show");
                         $("#loader_form .error-text").text("İnternet Erişimini Kontrol Ediniz! Error: 0");
-                        window.location.replace("/login.html");
+                       window.location.replace("/login.html");
 
                     } else {
                         $("#loader_form").addClass("show");
@@ -770,16 +779,15 @@ V = {
                         $(".game-screen").addClass("animate__animated animate__fadeIn");
     
                         $(".last-number .num").text("-");
-                        
     
                         V.bingo.setData();
-        
-                        $("#loader_form").removeClass("show"); //Loading
                     })
                     .catch((error) => {
                         console.log("V.bingo.resetGame() - error delete")
                         console.log(error)
                     });
+                    $("#loader_form").removeClass("show"); //Loading
+
                 }
 
               
@@ -875,7 +883,7 @@ V = {
                     $("input[name='webinar_link']").val(response.webinar_link);
                     $("input[name='disp_webinar_link_dt']").val(V.admin.combDate(response.disp_webinar_link_dt));
                     $("input[name='start_datetime']").val(V.admin.combDate(response.start_datetime));
-
+                    $("select option[value='"+response.background_color+"']").attr("selected","selected");
                     
                     V.gameOwner = response.owner;
                     V.gameID = response.id;
@@ -899,7 +907,11 @@ V = {
                 else{checkBox = false;}
                 formData.append('random_token_select', checkBox);
 
+               
 
+                // formData.append('background_color', );
+                // console.log($('select[name=background_color] option').filter(':selected').val())
+                
                 $.ajax({
                     url: V.gamesUrl + V.gameID + "/",
                     type: 'PUT',
@@ -920,7 +932,6 @@ V = {
                     processData: false,
                     error: function (error) {
                     console.log(error)
-                    reject(error)
                 }
                 });
             });

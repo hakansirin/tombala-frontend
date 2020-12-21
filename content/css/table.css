@@ -117,6 +117,9 @@ tbody tr {
     padding-right: 62px
 }
 
+table { table-layout: fixed; }
+td { width: 14,2%; }
+
 @media screen and (max-width:992px) {
     table {
         display: block
