@@ -13,6 +13,7 @@ V = {
     resetGameUrl: url + "deleteAllMoves/",
     gamesUrl : url + "games/",
     generateUrl:url + "generateUrlCsv/",
+    cardsUrl: url + "cards/",
     NumberColumn: "",
     cardColor: "",
     cardID: "",
@@ -22,6 +23,7 @@ V = {
     isTombala: "",
     gameID:"",
     gameOwner:"",
+    objGame:"",
 
     init: function () {
         V.AuthToken.init();
@@ -121,15 +123,14 @@ V = {
 
             $(".winner-card ul").removeClass("animate__animated animate__flipInX");
             $(".winner-card p").removeClass("animate__animated animate__flipInX");
+            cardID = $(this).attr('id');
+            $(".winner-card ul#" + cardID).css("display", "flex");
+            $(".winner-card p#" + cardID).css("display", "block");
+            $(".winner-card ul#" + cardID).addClass("animate__animated animate__flipInX");
+            $(".winner-card p#" + cardID).addClass("animate__animated animate__flipInX");
 
-            nameID = $(this).attr('id');
-            $(".winner-card ul#" + nameID).css("display", "flex");
-            $(".winner-card p#" + nameID).css("display", "block");
-            $(".winner-card ul#" + nameID).addClass("animate__animated animate__flipInX");
-            $(".winner-card p#" + nameID).addClass("animate__animated animate__flipInX");
-
-            $("#delete" + nameID).css("display", "block");
-            $("#delete" + nameID).addClass("animate__animated animate__flipInX");
+            $("#delete" + cardID).css("display", "block");
+            $("#delete" + cardID).addClass("animate__animated animate__flipInX");
 
 
             $(".admin-screen").css("display", "none");
@@ -140,6 +141,28 @@ V = {
 
             $(".card-screen").css("display", "block");
             $(".card-screen").addClass("animate__animated animate__lightSpeedInLeft");
+
+            //
+            cardID = cardID.replace("user","");
+
+                V.ajaxRequest(V.cardsUrl + cardID + "/", 'GET')
+                .then((response) => {
+                    console.log("Kart Click")
+                    console.log(response)
+                    V.bingo.getCinko(response.first_row, response.id, "A", V.objGame.picked_numbers);
+                    V.bingo.getCinko(response.second_row, response.id, "B", V.objGame.picked_numbers);
+                    V.bingo.getCinko(response.third_row, response.id, "C", V.objGame.picked_numbers);
+
+                  
+                    $("#loader_form").removeClass("show"); //Loading
+                })
+                .catch((error) => {
+                    console.log(error)
+                });
+        
+
+
+            
         });
 
         //Winner Card Close
@@ -286,6 +309,7 @@ V = {
 
         },
         setData: function () {
+            var t0 = performance.now();
             $("#loader_form").addClass("show"); //Loading
             // Post methodunda gönderilecek değişkenleri burada tanımlıyoruz
             // obj değeri Method olarak GET kullanılacak ise yazılmasına gerek yoktur ajaxRequest("url adresin", 'GET')
@@ -294,6 +318,7 @@ V = {
             V.ajaxRequest(V.gameStatus, 'GET')
                 .then((response) => {
                     let data = response;
+                    V.objGame = response;
                     console.log(response)
                     $("#post-picked-numbers .round input").removeAttr("checked");
                     $("input").removeAttr("disabled")
@@ -354,10 +379,8 @@ V = {
                                 $("#num-to-people-" + i + " .num").addClass("win");
                                 $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
                                 $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
-                                $(".winner-card ul#user" + value.id).css("display", "none");
-                                V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                               
+
                             } else if (value.is_ikinci_cinko) {
                                 $("ul#user" + value.id).remove();
                                 $("p#user" + value.id).remove();
@@ -367,9 +390,6 @@ V = {
                                 $(".winner-card ul#user" + value.id).css("display", "none");
                                 $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler"), "ikinci-cinko");
 
-                                V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
                             } else if (value.is_tombala) {
                                 $("ul#user" + value.id).remove();
                                 $("p#user" + value.id).remove();
@@ -378,18 +398,14 @@ V = {
                                 $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
                                 $(".winner-card ul#user" + value.id).css("display", "none");
                                 $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler"), "tombala");
-                                V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+
 
                             } else {
                                 $("ul#user" + value.id).remove();
                                 $("p#user" + value.id).remove();
 
                                 $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner, "userID" + value.id));
-                                V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+               
                             }
 
                         });
@@ -416,9 +432,12 @@ V = {
 
                     }
                 });
+                var t1 = performance.now();
+                console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
         },
         clickBingo: function () {
             $("#isaretle").click(function () {
+                var t0 = performance.now();
                 var selectNumber = 0;
                 selectNumber = $('.picked:checked').val();
 
@@ -436,6 +455,7 @@ V = {
                     V.ajaxRequest(V.makeMove, 'POST', obj)
                     .then((response) => {
                         let data = response;
+                        V.objGame = response;
                         // Seçilen Numaralar Disabled Yapılıyor
                         $(eval(data.picked_numbers)).each(function (index, value) {
                             $("#num" + value).prop('disabled', true);
@@ -478,9 +498,6 @@ V = {
                                     $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
 
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
                                     confetti.start();
 
 
@@ -495,9 +512,6 @@ V = {
 
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler", "ikinci-cinko"));
 
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
                                     confetti.start();
 
 
@@ -510,16 +524,12 @@ V = {
                                     $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
 
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler", "tombala"));
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                     
                                     confetti.start();
                                 } else {
                                     $("ul#user" + value.id).remove();
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner, "userID" + value.id));
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                               
                                 }
 
 
@@ -534,7 +544,8 @@ V = {
                         $("#loader_form").removeClass("show"); //Loading
                     });
                 }
-
+                var t1 = performance.now();
+                console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.");
             });
 
             $("#random-isaretle").click(function () {
@@ -546,6 +557,7 @@ V = {
                 V.ajaxRequest(V.makeMove, 'POST', obj)
                     .then((response) => {
                         let data = response;
+                        V.objGame = response;
                         // Seçilen Numaralar Disabled Yapılıyor
                         $(eval(data.picked_numbers)).each(function (index, value) {
                             $("#num" + value).prop('disabled', true);
@@ -588,9 +600,6 @@ V = {
                                     $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
 
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
                                     confetti.start();
 
 
@@ -605,9 +614,6 @@ V = {
 
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler", "ikinci-cinko"));
 
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
                                     confetti.start();
 
 
@@ -620,16 +626,12 @@ V = {
                                     $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
 
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler", "tombala"));
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                               
                                     confetti.start();
                                 } else {
                                     $("ul#user" + value.id).remove();
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner, "userID" + value.id));
-                                    V.bingo.getCinko(value.first_row, value.id, "A", data.picked_numbers);
-                                    V.bingo.getCinko(value.second_row, value.id, "B", data.picked_numbers);
-                                    V.bingo.getCinko(value.third_row, value.id, "C", data.picked_numbers);
+                     
                                 }
 
 
@@ -798,7 +800,7 @@ V = {
          
 
         },
-          downloadUrls: function () {
+        downloadUrls: function () {
             $("#get-links").click(function () {
 
                 // var answer = window.confirm("Oyun geri dÃ¶nÃ¼lemez ÅŸekilde yeniden baÅŸlatÄ±lacaktÄ±r?");
