@@ -282,7 +282,9 @@ V = {
                     },
                     error: function (error) {
                     console.log(error)
-        $("#loader_form").removeClass("show"); //Loading
+                    alert("Böyle bir kullanıcı zaten var!")
+                    location.reload()
+                    $("#loader_form").removeClass("show"); //Loading
 
                 }
                 });
@@ -294,7 +296,7 @@ V = {
             V.ajaxRequest(V.listGameUrl,"GET")
             .then((response) => {
 
-                $(".game-list").html("<table id=\"game-list\">\r\n<tr class=\"table100-head\" >\r\n<th>ID<\/th>\r\n<th>Kullanici Adi<\/th>\r\n<th>Sifre<\/th>\r\n<th>Baslama Tarihi<\/th>\r\n<th>Kart Sayisi<\/th>\r\n<th>URL Sayisi<\/th>\r\n<th>Kullanilan Url Sayisi<\/th>\r\n<th>Dağıtılan Kart Sayisi<\/th><\/tr>\r\n<\/table>")
+                $(".game-list").html("<table id=\"game-list\">\r\n<tr class=\"table100-head\" >\r\n<th>ID<\/th>\r\n<th>Kullanici Adi<\/th>\r\n<th>Baslama Tarihi<\/th>\r\n<th>Kart Limiti<\/th>\r\n<th>URL Sayisi<\/th>\r\n<th>Kullanilan Url Sayisi<\/th>\r\n<th>Dağıtılan Kart Sayisi<\/th><\/tr>\r\n<\/table>")
 
                
 
@@ -313,7 +315,6 @@ V = {
                     <tr>
                     <td>${value.id}</td>
                     <td>${value.username}</td>
-                    <td>${value.password}</td>
                     <td>${value.start_datetime}</td>
                     <td>${value.card_limit_per_url}</td>
                     <td>${value.url_count}</td>

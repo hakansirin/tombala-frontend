@@ -134,7 +134,7 @@ V = {
             console.log('adding csrf token cookie to document')
             V.AuthToken.setCookie("csrftoken", token, 7);
             console.log("token: " + token)
-            window.location.replace("/cekilen-rakamlar.html")
+            window.location.replace("/game.html")
 
         },
 

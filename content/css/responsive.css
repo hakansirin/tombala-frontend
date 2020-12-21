@@ -140,6 +140,10 @@
         border: 3px solid #49635b;
         top: 4px;
     }
+    .video{
+        width: 360px;
+    height: 205px;
+    }
 }
 
 /* Tablets */
@@ -190,5 +194,9 @@
         padding: 10px;
     }
 
+    .video{
+        width: 290px;
+    height: 170px;
+    }
 }
 

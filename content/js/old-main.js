@@ -15,7 +15,7 @@ $.fn.funcButton = function () {
 
 
 
-//Cekilen-rakamlar.html ->
+//Game.html ->
 // Pick Number Create
 window.onload = function() {
     var numberSelectHTML ="";

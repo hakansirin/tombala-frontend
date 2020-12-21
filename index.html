@@ -55,6 +55,7 @@
                 <div class="col-md-2">
                     <div class="sirket-logo">
                         <div class="logo">
+                            <img id="companyLogo" src="/content/images/logo/rhino.svg" alt="">
                         </div>
                     </div>
                 </div>
@@ -68,7 +69,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="text register-text">
-                        Register TEXT
+                            Şirket Tombalası Tanıtım Videosu
                     </div>
                 </div>
             </div>
@@ -79,57 +80,10 @@
             <div class="row justify-content-center">
                 <div class="row">
 
-                    <div id="game-start"> Oyun Başladı! </div>
-
-                    <div class="countdown">
-                        <div class="clock days">
-                            <canvas id="days-canvas" width="200" height="200"></canvas>
-                            <svg width="200" height="200">
-                                <circle id="outer" cx="107" cy="92" r="82" fill="transparent" stroke-width="3"
-                                    stroke="transparent" opacity="1" />
-                            </svg>
-                            <div class="label">
-                                <span id="days-value"></span><br>
-                            </div>
-                            <p class="date-text">GÜN</p>
-
-                        </div>
-                        <div class="clock hours">
-                            <canvas id="hours-canvas" width="200" height="200"></canvas>
-                            <svg width="200" height="200">
-                                <circle id="outer" cx="107" cy="92" r="82" fill="transparent" stroke-width="3"
-                                    stroke="transparent" opacity="1" />
-                            </svg>
-                            <div class="label">
-                                <span id="hours-value"></span><br>
-                            </div>
-                            <p class="date-text">SAAT</p>
-
-                        </div>
-                        <div class="clock minutes">
-                            <canvas id="minutes-canvas" width="200" height="200"></canvas>
-                            <svg width="200" height="200">
-                                <circle id="outer" cx="107" cy="92" r="82" fill="transparent" stroke-width="3"
-                                    stroke="transparent" opacity="1" />
-                            </svg>
-                            <div class="label">
-                                <span id="minutes-value"></span><br>
-                            </div>
-                            <p class="date-text">DAKİKA</p>
-
-                        </div>
-                        <div class="clock seconds">
-                            <canvas id="seconds-canvas" stroke="url(#gradient)" width="200" height="200"></canvas>
-                            <svg width="200" height="200" style="z-index:1;">
-                                <circle id="outer" cx="107" cy="92" r="82" fill="transparent" stroke-width="3"
-                                    stroke="transparent" opacity="1" />
-                            </svg>
-                            <div class="label">
-                                <span id="seconds-value"></span><br>
-                            </div>
-                            <p class="date-text">SANİYE</p>
-
-                        </div>
+                    <div class="video"  >
+                        <video controls>
+                            <source src="/content/video/tanitim.mp4" type="video/mp4" />
+                        </video>
                     </div>
 
                 </div>
@@ -137,79 +91,8 @@
             </div>
         </div>
     </section>
-    <section id="sec3" class="form-sec">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-
-                    <div class="form-or-name">
-                        <form action="" id="form-register" class="d-none">
-
-                            <div class="form-group">
-                                <label id="email" for="email">E-Posta:</label><br>
-                                <input id="email" type="email" for="email" required
-                                    placeholder="Kartını seçmek için şirket mail adresini giriniz">
-                            </div>
-                            <div class="form-group two">
-                                <div class="form-group">
-                                    <label id="name" for="isim">İsim:</label><br>
-                                        <input  id="name"type="text" for="isim" required placeholder="İsim giriniz">
-                                </div>
-                                <div class="form-group">
-                                    <label id="surname" for="soyisim">Soyisim:</label><br>
-                                    <input id="surname" type="text" for="soyisim" required placeholder="Soyisim giriniz">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="family">Evde kaç kişisiniz?</label><br>
-                                <select id="family">
-                                    <option disabled selected>Kişi sayısını seçiniz</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                  </select>
-                            </div>
-                        </form>
-                        <div class="text">
-                            <div class="name">
-                                
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
 
 
-            </div>
-        </div>
-    </section>
-    <section id="sec3" class="tombala">
-        <div class="container">
-            <div class="row justify-content-center">
-
-                <div class="content ">
-                    <div id="card-wrap" class="card-wrap winner-card">
-                        <div id="card-A"></div>
-                        <div id="card-B" class="d-none"></div>
-                        <div id="card-C" class="d-none"></div>
-                        <div id="card-D" class="d-none"></div>
-                    </div>
-
-                    <div class="button-wrap d-none">
-                        
-                        <div class="button-100">
-                            <button type="submit" form="form-register" id="send-register" class="btn-main">TAMAM</button>
-                        </div>
-                    </div>
-
-                </div>
-
-
-
-            </div>
-        </div>
-    </section>
     <footer>
         <div class="container-fluid">
             <div class="row justify-content-between">
@@ -226,12 +109,7 @@
             </div>
         </div>
     </footer>
-    <div id="loader_form" class="show">
-        <div data-loader="circle-side-2">
-            <img src="content/images/logo/rhino-circle.png" alt="">
-        </div>
-        <div class="error-text"></div>
-    </div>
+
     <!-- jQuery first, then Bootstrap JS -->
     <script src="content/js/jquery.min.js"></script>
     <script src="content/js/bootstrap/bootstrap.min.js"></script>
@@ -245,7 +123,6 @@
 
     <!-- Optional Developer Custom JavaScript -->
     <script src="content/js/custom.js"></script>
-    <script src="content/js/register.js"></script>
 
 <script>
 

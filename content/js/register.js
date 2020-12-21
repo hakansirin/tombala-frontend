@@ -18,26 +18,27 @@ V = {
     newThirdRow: "",
     colorIndex: 0,
     currentColor: "red",
-    CompanyName:"",
-    logo:"",
-    register_text:"",
-    start_datetime:"",
-    webinar_link:"",
-    disp_webinar_link_dt:"",
-    cardLetter:"",
-    card_A_id:"",
-    card_B_id:"",
-    card_C_id:"",
-    card_D_id:"",
-    familyData:"",
-    card_A_color:"",
-    card_B_color:"",
-    card_C_color:"",
-    card_D_color:"",
-    dateDistance:"",
-    Key:"",
-    colors:["blue", "yellow", "green", "pink", "darkblue", "red"],
-    cardLimit:"",
+    CompanyName: "",
+    logo: "",
+    register_text: "",
+    start_datetime: "",
+    webinar_link: "",
+    disp_webinar_link_dt: "",
+    cardLetter: "",
+    card_A_id: "",
+    card_B_id: "",
+    card_C_id: "",
+    card_D_id: "",
+    familyData: "",
+    card_A_color: "",
+    card_B_color: "",
+    card_C_color: "",
+    card_D_color: "",
+    dateDistance: "",
+    Key: "",
+    colors: ["blue", "yellow", "green", "pink", "darkblue", "red"],
+    cardLimit: "",
+    isRegister: "",
 
     init: function () {
         V.global();
@@ -71,7 +72,7 @@ V = {
     global: function () {
         $("#loader_form").addClass("show")
 
-     
+
     },
 
     buttons: {
@@ -93,8 +94,8 @@ V = {
             V.buttons.changeColor("B");
             V.buttons.changeColor("C");
             V.buttons.changeColor("D");
-            
-            
+
+
             // PDF Download
             $(document).on('click', '#download-pdf', function () {
                 var element = document.getElementById('card-wrap');
@@ -102,68 +103,68 @@ V = {
             });
 
             //Family Number Select
-            $('#family').change(function(){
-                V.familyData= $(this).val();
-                
-                if(V.familyData == 1) {
+            $('#family').change(function () {
+                V.familyData = $(this).val();
+
+                if (V.familyData == 1) {
                     $("#card-A").removeClass("d-none");
                     $("#card-B").addClass("d-none");
                     $("#card-C").addClass("d-none");
                     $("#card-D").addClass("d-none");
                 }
-                if(V.familyData == 2) {
+                if (V.familyData == 2) {
                     $("#card-A").removeClass("d-none");
                     $("#card-B").removeClass("d-none");
                     $("#card-C").addClass("d-none");
                     $("#card-D").addClass("d-none");
                 }
-                if(V.familyData == 3) {
+                if (V.familyData == 3) {
                     $("#card-A").removeClass("d-none");
                     $("#card-B").removeClass("d-none");
                     $("#card-C").removeClass("d-none");
                     $("#card-D").addClass("d-none");
                 }
-                if(V.familyData == 4) {
+                if (V.familyData == 4) {
                     $("#card-A").removeClass("d-none");
                     $("#card-B").removeClass("d-none");
                     $("#card-C").removeClass("d-none");
                     $("#card-D").removeClass("d-none");
                 }
-              });
+            });
 
-           
+
         },
         changeColor: function (letter) {
 
-            $(document).on('click', "#change-color-"+letter, function () {
+            $(document).on('click', "#change-color-" + letter, function () {
                 var currentColor = $("#card-" + letter + " ul").attr("class");
                 console.log(currentColor)
-                currentColor = currentColor.replace("t-card ","");
+                currentColor = currentColor.replace("t-card ", "");
 
-                $("#card-"+letter+" ul").removeAttr('class').attr('class', '');
-                $("#card-"+letter+" ul").addClass('t-card ' + V.buttons.randomExcet(currentColor));
+                $("#card-" + letter + " ul").removeAttr('class').attr('class', '');
+                $("#card-" + letter + " ul").addClass('t-card ' + V.buttons.randomExcet(currentColor));
 
             });
 
-            
-            
+
+
         },
 
-        randomExcet: function (color=NaN) { 
+        randomExcet: function (color = NaN) {
             color_set = new Set(V.colors)
             color_set.delete(color)
             rest_colors = Array.from(color_set);
             returnColor = rest_colors[Math.floor(Math.random() * rest_colors.length)];
             console.log(color + " - " + returnColor)
             return returnColor;
-         },
+        },
 
-        changeCard:function (letter) { 
+        changeCard: function (letter) {
             $(document).on('click', "#change-card-" + letter, function () {
-                dontChangeColor = $("#card-"+letter+" ul").attr('class').replace("t-card","");
+                dontChangeColor = $("#card-" + letter + " ul").attr('class').replace("t-card", "");
                 V.register.newCard(letter, dontChangeColor);
             });
-         }
+        }
 
     },
 
@@ -177,19 +178,19 @@ V = {
 
         registerData: function () {
 
-            $("#form-register").submit(function(e) {
+            $("#form-register").submit(function (e) {
 
-                e.preventDefault();    
+                e.preventDefault();
                 var formData = new FormData(this);
-            
+
                 getEmail = $("input#email").val();
                 getName = $("input#name").val();
                 getSurname = $("input#surname").val();
 
                 V.register.newGamerWithCard(getName, getSurname, getEmail, V.GamersURLID, V.register.getValidateKey(location.search), V.newCard);
 
-                });
-         
+            });
+
         },
 
 
@@ -198,7 +199,9 @@ V = {
             validateKey = url.replace("key", "");
             validateKey = validateKey.replace("?", "");
             validateKey = validateKey.replace("=", "");
-            if (validateKey.length > 36) {validateKey = validateKey.substring(0,36);}
+            if (validateKey.length > 36) {
+                validateKey = validateKey.substring(0, 36);
+            }
 
             return validateKey;
         },
@@ -217,19 +220,35 @@ V = {
         },
 
 
-        newCard: function (letter,color) {
+        newCard: function (letter, color) {
 
             V.ajaxRequest(url + V.cardUrl, "POST", false)
                 .then((response) => {
 
-                    console.log("newCARD("+letter+")");
+                    console.log("newCARD(" + letter + ")");
                     console.log(response);
 
-                    
-                    if(letter=="A"){$("#card-A").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_A_id = response.id;V.card_A_color = color;}
-                    if(letter=="B"){$("#card-B").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_B_id = response.id;V.card_B_color = color;}
-                    if(letter=="C"){$("#card-C").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_C_id = response.id;V.card_C_color = color;}
-                    if(letter=="D"){$("#card-D").html(V.bingo.createCard(V.GamersURLID, color,letter)); V.card_D_id = response.id;V.card_D_color = color;}
+
+                    if (letter == "A") {
+                        $("#card-A").html(V.bingo.createCard(V.GamersURLID, color, letter));
+                        V.card_A_id = response.id;
+                        V.card_A_color = color;
+                    }
+                    if (letter == "B") {
+                        $("#card-B").html(V.bingo.createCard(V.GamersURLID, color, letter));
+                        V.card_B_id = response.id;
+                        V.card_B_color = color;
+                    }
+                    if (letter == "C") {
+                        $("#card-C").html(V.bingo.createCard(V.GamersURLID, color, letter));
+                        V.card_C_id = response.id;
+                        V.card_C_color = color;
+                    }
+                    if (letter == "D") {
+                        $("#card-D").html(V.bingo.createCard(V.GamersURLID, color, letter));
+                        V.card_D_id = response.id;
+                        V.card_D_color = color;
+                    }
 
                     V.bingo.getCinko(JSON.parse(response.first_row), "A", letter);
                     V.bingo.getCinko(JSON.parse(response.second_row), "B", letter);
@@ -288,16 +307,25 @@ V = {
         },
 
         newGamerWithCard: function (name, surname, email, gamer_url, key) {
-       
+
 
             card_ids = [V.card_A_id];
-            card_colors =  [ "\"" +V.card_A_color+ "\""];
-            if(V.familyData > 1) { card_ids.push( V.card_B_id);card_colors.push("\"" +V.card_B_color+ "\""); };
-            if(V.familyData > 2) { card_ids.push(V.card_C_id);card_colors.push("\"" +V.card_C_color+ "\""); };
-            if(V.familyData > 3) { card_ids.push(V.card_D_id);card_colors.push("\"" +V.card_D_color+ "\""); };
+            card_colors = ["\"" + V.card_A_color + "\""];
+            if (V.familyData > 1) {
+                card_ids.push(V.card_B_id);
+                card_colors.push("\"" + V.card_B_color + "\"");
+            };
+            if (V.familyData > 2) {
+                card_ids.push(V.card_C_id);
+                card_colors.push("\"" + V.card_C_color + "\"");
+            };
+            if (V.familyData > 3) {
+                card_ids.push(V.card_D_id);
+                card_colors.push("\"" + V.card_D_color + "\"");
+            };
 
-            card_ids= "[" + card_ids.toString() + "]";
-            card_colors= "[" + card_colors.toString() + "]";
+            card_ids = "[" + card_ids.toString() + "]";
+            card_colors = "[" + card_colors.toString() + "]";
 
             console.log(card_ids);
             console.log(card_colors);
@@ -308,16 +336,16 @@ V = {
                 "email": email,
                 "gamer_url": gamer_url,
                 "key": key,
-                "card_id_list":card_ids,
-                "card_color_list":card_colors,
+                "card_id_list": card_ids,
+                "card_color_list": card_colors,
             }
 
             V.ajaxRequest(V.multipleCardCreate, "POST", false, obj)
                 .then((response) => {
-                        console.log("Gamer Post work")
-                        console.log(response)
-                        location.reload();
-                        
+                    console.log("Gamer Post work")
+                    console.log(response)
+                    location.reload();
+
                 });
 
         },
@@ -338,39 +366,52 @@ V = {
                         V.webinar_link = response.webinar_link;
                         V.disp_webinar_link_dt = response.disp_webinar_link_dt;
 
-
+                   
                         V.cardLimit = response.card_limit_per_url;
                         console.log("card limit" + V.cardLimit)
                         //Change Logo
-                        $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + response.logo + '" alt="">')
+                        $(".sirket-logo .logo").html(' <img id="companyLogo" src="' + url + response.logo + '" alt="">')
 
                         //Family Data - Card Limit
                         $("#family option").remove();
                         $("#family").append('<option value="1">1</option>')
-                        if(V.cardLimit > 1) { $("#family").append('<option value="2">2</option>') };
-                        if(V.cardLimit > 2) { $("#family").append('<option value="3">3</option>') };
-                        if(V.cardLimit > 3) { $("#family").append('<option value="4">4</option>') };
-                        
+                        if (V.cardLimit > 1) {
+                            $("#family").append('<option value="2">2</option>')
+                        };
+                        if (V.cardLimit > 2) {
+                            $("#family").append('<option value="3">3</option>')
+                        };
+                        if (V.cardLimit > 3) {
+                            $("#family").append('<option value="4">4</option>')
+                        };
+
                         $(".register-text").text(V.register_text);
-                        $(".sirket-logo .logo").html(' <img id="companyLogo" src="' +  url + response.logo + '" alt="">')
+                        $(".sirket-logo .logo").html(' <img id="companyLogo" src="' + url + response.logo + '" alt="">')
 
                         // Register NO
                         if (response.gamer == null) {
+                            V.isRegister = false;
                             // POST - create card
                             $("#form-register").removeClass("d-none");
                             $("#register .button-wrap").removeClass("d-none");
                             $(".form-or-name .text").addClass("d-none");
                             V.GamersURLID = response.id;
 
-                            V.register.newCard("A","red");
-                            if(V.cardLimit > 1) { V.register.newCard("B","blue"); };
-                            if(V.cardLimit > 2) { V.register.newCard("C","yellow"); };
-                            if(V.cardLimit > 3) { V.register.newCard("D","pink"); };
-                            
+                            V.register.newCard("A", "red");
+                            if (V.cardLimit > 1) {
+                                V.register.newCard("B", "blue");
+                            };
+                            if (V.cardLimit > 2) {
+                                V.register.newCard("C", "yellow");
+                            };
+                            if (V.cardLimit > 3) {
+                                V.register.newCard("D", "pink");
+                            };
+
                         }
                         // Register YES
                         else {
-                            
+                            V.isRegister = true;
                             $(".form-or-name .text").removeClass("d-none");
                             $("#form-register").addClass("d-none");
                             $("#register .button-wrap").addClass("d-none");
@@ -378,45 +419,40 @@ V = {
 
 
                             $(".form-or-name .text").html("Merhaba " + response.gamer.name + " " + response.gamer.surname + ".<br>Kartını indirmek için <a id=\"download-pdf\"><span>buraya tıkla</span></a><br>Çekiliş öncesi kartını bastırmayı unutma!")
-                            
+
 
                             $("#card-A").append('<div class="card-name" id="card-name-A">' + response.gamer.cards[0].owner + '</div>');
                             console.log(response.gamer.cards[0].owner)
-                            $(".card-wrap #card-A").append(V.bingo.createCard(response.id, response.gamer.cards[0].color ,"A"));
-                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A","A");
-                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B","A");
-                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].third_row), "C","A");
+                            $(".card-wrap #card-A").append(V.bingo.createCard(response.id, response.gamer.cards[0].color, "A"));
+                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].first_row), "A", "A");
+                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].second_row), "B", "A");
+                            V.bingo.getCinko(JSON.parse(response.gamer.cards[0].third_row), "C", "A");
 
-                            if(response.gamer.cards.length > 1 ) { 
+                            if (response.gamer.cards.length > 1) {
                                 $("#card-B").append('<div class="card-name" id="card-name-B">' + response.gamer.cards[1].owner + '</div>');
-                            $(".card-wrap #card-B").append(V.bingo.createCard(response.id, response.gamer.cards[1].color,"B"));
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].first_row), "A","B");
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].second_row), "B","B");
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].third_row), "C","B");
+                                $(".card-wrap #card-B").append(V.bingo.createCard(response.id, response.gamer.cards[1].color, "B"));
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].first_row), "A", "B");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].second_row), "B", "B");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[1].third_row), "C", "B");
                             };
-                            if(response.gamer.cards.length > 2) { 
+                            if (response.gamer.cards.length > 2) {
                                 $("#card-C").append('<div class="card-name" id="card-name-C">' + response.gamer.cards[2].owner + '</div>');
-                                $(".card-wrap #card-C").append(V.bingo.createCard(response.id,response.gamer.cards[2].color,"C"));
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].first_row), "A","C");
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].second_row), "B","C");
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].third_row), "C","C");
+                                $(".card-wrap #card-C").append(V.bingo.createCard(response.id, response.gamer.cards[2].color, "C"));
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].first_row), "A", "C");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].second_row), "B", "C");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[2].third_row), "C", "C");
                             };
-                            if(response.gamer.cards.length > 3) {
+                            if (response.gamer.cards.length > 3) {
                                 $("#card-D").append('<div class="card-name" id="card-name-D">' + response.gamer.cards[3].owner + '</div>');
-                                $(".card-wrap #card-D").append(V.bingo.createCard(response.id, response.gamer.cards[3].color,"D"));
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].first_row), "A","D");
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].second_row), "B","D");
-                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].third_row), "C","D");
+                                $(".card-wrap #card-D").append(V.bingo.createCard(response.id, response.gamer.cards[3].color, "D"));
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].first_row), "A", "D");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].second_row), "B", "D");
+                                V.bingo.getCinko(JSON.parse(response.gamer.cards[3].third_row), "C", "D");
                             };
-                            $(".buttons").css("display","none");
+                            $(".buttons").css("display", "none");
 
                         }
                         V.register.parseDate(response.start_datetime);
-
-
-
-
-                        $("#loader_form").removeClass("show")
 
                         //Loading
                     })
@@ -426,21 +462,20 @@ V = {
                         $("#loader_form .error-text").text("Validate Error!");
 
                     });
-            } 
-            else {
+            } else {
                 console.log("Wrong KEY!!!")
                 $("#loader_form .error-text").text("Lütfen size verilen özel linkten giriş yapınız!");
             }
 
         },
 
-        
+
         countdown: function (year, month, day, hour, minute, second) {
             // Set Launch Date (ms)
 
             const launchDate = new Date(year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second).getTime();
             const tnow = new Date().getTime();
-            
+
             // Context object
             const c = {
                 context: {},
@@ -507,17 +542,22 @@ V = {
                     // Get distance from now to launchDate
                     const distance = launchDate - now;
 
-                    if(distance < 1000){
+                    if (distance < 1000) {
 
                         $(".countdown").remove();
+                        $("#game-start").css("display", "flex");
+                    }
+                    if (distance < 1000 && V.isRegister == true) {
+                        $("#game-start").css("height", "10vh");
+                        $("#loader_form").removeClass("show");
+                    }
+                    if (distance < 1000 && V.isRegister == false) {
                         $(".form-sec").remove();
                         $(".tombala").remove();
                         $("button").remove();
-                        $("#game-start").css("display","flex");
                         $("#loader_form").removeClass("show");
-
-                    }
-                    else{
+                    } else {
+                        $(".countdown").removeClass("d-none");
                         $("#loader_form").removeClass("show");
                     }
 
@@ -544,7 +584,7 @@ V = {
     },
 
     bingo: {
-        createCard: function (id, cardColor,letter) {
+        createCard: function (id, cardColor, letter) {
             let content = " <ul id=\"user" + id + "\"  class=\"t-card " + cardColor + "\">\r\n<li id=\"column1\">\r\n<div id=\"A1\"><\/div>\r\n<div id=\"B1\"><\/div>\r\n<div id=\"C1\"><\/div>\r\n<\/li>\r\n<li id=\"column2\">\r\n<div id=\"A2\"><\/div>\r\n<div id=\"B2\"><\/div>\r\n<div id=\"C2\"><\/div>\r\n<\/li>\r\n<li id=\"column3\">\r\n<div id=\"A3\"><\/div>\r\n<div id=\"B3\"><\/div>\r\n<div id=\"C3\"><\/div>\r\n<\/li>\r\n<li id=\"column4\">\r\n<div id=\"A4\"><\/div>\r\n<div id=\"B4\"><\/div>\r\n<div id=\"C4\"><\/div>\r\n<\/li>\r\n<li id=\"column5\">\r\n<div id=\"A5\"><\/div>\r\n<div id=\"B5\"><\/div>\r\n<div id=\"C5\"><\/div>\r\n<\/li>\r\n<li id=\"column6\">\r\n<div id=\"A6\"><\/div>\r\n<div id=\"B6\"><\/div>\r\n<div id=\"C6\"><\/div>\r\n<\/li>\r\n<li id=\"column7\">\r\n<div id=\"A7\"><\/div>\r\n<div id=\"B7\"><\/div>\r\n<div id=\"C7\"><\/div>\r\n<\/li>\r\n<li id=\"column8\">\r\n<div id=\"A8\"><\/div>\r\n<div id=\"B8\"><\/div>\r\n<div id=\"C8\"><\/div>\r\n<\/li>\r\n<li id=\"column9\">\r\n<div id=\"A9\"><\/div>\r\n<div id=\"B9\"><\/div>\r\n<div id=\"C9\"><\/div>\r\n<\/li>\r\n<\/ul> <div class=\"buttons\"><a id=\"change-card-" + letter + "\" class=\"btn-main\">Rakam Degistir<\/a><a id=\"change-color-" + letter + "\" class=\"btn-main\">Renk Degistir<\/a><\/div> ";
 
             return content;
@@ -557,12 +597,12 @@ V = {
 
                 for (i = 0; i < 10; i++) {
                     if (number == i) {
-                        $("#card-" + cardName +" #" + columnLet + i).text(rowNum);
+                        $("#card-" + cardName + " #" + columnLet + i).text(rowNum);
                     }
                 }
 
 
-                
+
             });
 
         },
@@ -572,11 +612,11 @@ V = {
         },
     },
 
-    game : {
+    game: {
 
-        init:function () { 
-           
-         },
+        init: function () {
+
+        },
 
         setData: function () {
             $("#loader_form").addClass("show"); //Loading - Validate URL çek
@@ -584,7 +624,7 @@ V = {
                 .then((response) => {
                     let data = response;
 
-                    
+
 
 
                     $("#loader_form").removeClass("show"); //Loading
@@ -592,9 +632,9 @@ V = {
                 .catch((error) => {
                     console.log("V.game.Setdata() - error get")
                     console.log(error)
-                   
+
                 });
-            }
+        }
     },
 
 
