@@ -113,6 +113,7 @@ V = {
             
         });
 
+        V.cardlimit = 1;
         $('#card-limit').change(function(){
             V.cardlimit = $(this).val();
         });
@@ -309,7 +310,6 @@ V = {
 
 
                 $(response.reverse()).each(function (index, value) {
-                    console.log(index)
                     
                     $("#game-list tbody").append(`
                     <tr>
