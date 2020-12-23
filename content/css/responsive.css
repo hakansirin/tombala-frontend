@@ -11,7 +11,9 @@
     .round{
         margin: 1% 1.5%;
     }
-
+    .notification .numbers {
+        overflow-y: auto;
+    }
 }
 
 
@@ -42,6 +44,13 @@
     .form-group {
         margin-bottom: 0.6rem;
     }
+    textarea.form-control {
+        height: 100px;
+    }
+    .notification .numbers .num {
+        width: 33px;
+        height: 33px;
+    }
 }
 
 /* (1440x900) WXGA+ Display - MacBook */
@@ -63,8 +72,8 @@
         margin: 1% 1.5%;
     }
     .round label {
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
     }
     .notification .numbers .wrap {
         margin-bottom: 5px;
@@ -77,14 +86,15 @@
         padding: 5px;
         font-size:10px;
     }
-    .notification .numbers {
-        overflow-y: auto;
-    }
+
     #games-data textarea{
         height:50px;
     }
     .form-group {
         margin-bottom: 0.3rem;
+    }
+    .logo {
+        margin-bottom: 0px;
     }
 }
 
@@ -127,6 +137,10 @@
     .btn-main {
         padding: 10px 10px;
     }
+    .notification .numbers .num {
+        width: 30px;
+        height: 30px;
+    }
 }
 
 @media (width: 1024px) {
@@ -139,7 +153,11 @@
 /* iPad */
 
 @media(max-device-width: 1024px) {
- 
+    #game .t-card div {
+        height: 60px;
+        width: 50px;
+        font-size: 26px;
+    }
 }
 
 

@@ -1155,3 +1155,7 @@ button:focus {
 #person-delete{
     width: 30%;
 }
+
+#game footer{
+    width:75%;
+}
