@@ -1,6 +1,7 @@
 url = "https://sirkettombalasi.com:8443/"
 
 V = {
+    winAudio: new Audio("content/sound/win.mp3"),
     urlData: "", // Global değişkenler
     ajaxType: "",
     key: 0,
@@ -24,6 +25,7 @@ V = {
     gameID: "",
     gameOwner: "",
     objGame: "",
+
 
     init: function () {
         V.AuthToken.init();
@@ -117,24 +119,10 @@ V = {
 
         //People Card Open
         $(document).on('click', '.wrap .name a', function () {
-
+            cardID = $(this).attr('id');
             $("#loader_form").addClass("show"); //Loading
 
-            $(".winner-card ul").css("display", "none");
-            $(".winner-card p").css("display", "none");
-            $(".person-delete").css("display", "none");
-
-            $(".winner-card ul").removeClass("animate__animated animate__flipInX");
-            $(".winner-card p").removeClass("animate__animated animate__flipInX");
-            cardID = $(this).attr('id');
-            $(".winner-card ul#" + cardID).css("display", "flex");
-            $(".winner-card p#" + cardID).css("display", "block");
-            $(".winner-card ul#" + cardID).addClass("animate__animated animate__flipInX");
-            $(".winner-card p#" + cardID).addClass("animate__animated animate__flipInX");
-
-            $("#delete" + cardID).css("display", "block");
-            $("#delete" + cardID).addClass("animate__animated animate__flipInX");
-
+            $(".winner-card .newCard").css("display", "none");
 
             $(".admin-screen").css("display", "none");
             $(".admin-screen").removeClass("animate__animated animate__fadeIn");
@@ -152,10 +140,29 @@ V = {
                 .then((response) => {
                     console.log("Kart Click")
                     console.log(response)
+                    $(".winner-card #cardID" + cardID).remove();
+
+                    $(".winner-card").append(V.bingo.createCard(cardID, response.color, response.owner, "userID" + cardID));
+
                     V.bingo.getCinko(response.first_row, response.id, "A", V.objGame.picked_numbers);
                     V.bingo.getCinko(response.second_row, response.id, "B", V.objGame.picked_numbers);
                     V.bingo.getCinko(response.third_row, response.id, "C", V.objGame.picked_numbers);
+                    
+                    $(".winner-card .newcard").css("display", "block");
+                    $(".winner-card #cardID" + cardID).addClass("animate__animated animate__flipInX");
 
+                    if(response.is_birinci_cinko){
+                        $(".winner-card .winner-name#user" + response.id).text(response.owner + " Birinci Çinko! Tebrikler");
+                        $(".winner-card .winner-name#user" + response.id).addClass("birinci-cinko");
+                    }
+                    if(response.is_ikinci_cinko){
+                        $(".winner-card .winner-name#user" + response.id).text(response.owner + " İkinci Çinko! Tebrikler");
+                        $(".winner-card .winner-name#user" + response.id).addClass("ikinci-cinko");
+                    }
+                    if(response.is_tombala){
+                        $(".winner-card .winner-name#user" + response.id).text(response.owner + "Tombala! Tebrikler");
+                        $(".winner-card .winner-name#user" + response.id).addClass("tombala");
+                    }
 
                     $("#loader_form").removeClass("show"); //Loading
                 })
@@ -206,11 +213,6 @@ V = {
             $(".game-screen").css("display", "block");
             $(".game-screen").addClass("animate__animated animate__fadeIn");
         });
-
-
-
-
-
 
         //quit
         $("#quit").click(function () {
@@ -308,118 +310,119 @@ V = {
             V.bingo.deletePerson();
             V.bingo.resetGame();
             V.bingo.downloadUrls();
-
-
         },
+
+        gameStatus:function (response) { 
+
+            let data = response;
+            V.objGame = response;
+            $("#post-picked-numbers .round input").removeAttr("checked");
+            $("input").removeAttr("disabled")
+            // Seçilen Numaralar Disabled Yapılıyor
+            $(eval(data.picked_numbers)).each(function (index, value) {
+                $("#num" + value).prop('disabled', true);
+            });
+            $(data.last_three_moves).each(function (index, value) {
+                $(".last-number .number" + index).text(value);
+            });
+            //Game Text
+            $("#gameText").text(response.game_text);
+            //Change Logo
+            $(".sirket-logo .logo").html(' <img id="companyLogo" src="' + url + data.logo + '" alt="">')
+            //Background Color 
+            $("body").addClass(response.background_color);
+
+            //Change BG
+            $('#background_color').change(function () {
+                $("body").removeClass();
+                $("body").addClass($(this).val());
+            });
+
+            //Random Button Show
+            $("input[name='random_token_select']").attr('checked', response.random_token_select)
+
+            //Random Button Display 
+            if (response.random_token_select == true) {
+                $("#random-isaretle").removeClass("d-none");
+                $("#isaretle").addClass("d-none");
+                $("#number-select").addClass("click-block");
+                $(".round input[type=checkbox]").prop('checked', false);
+            } else {
+                $("#random-isaretle").addClass("d-none");
+                $("#isaretle").removeClass("d-none");
+                $("#number-select").removeClass("click-block");
+            }
+
+            $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
+            $(".wrap .num").removeClass("win win2 win-bingo");
+            $(".wrap .name a").removeClass("win win2 win-bingo");
+            confetti.stop();
+
+            //Puan Tablosu Ad ve Kişi Sayısı Hesaplanan Veriler
+            for (var i = 0; i < Object.keys(data.leader_boards).length; i++) {
+                $(data.leader_boards[i]).each(function (index, value) {
+
+                    var countPeople = Object.keys(data.leader_boards[i]).length;
+                    $("#num-to-people-" + i + " .count").text(countPeople + " Kişi");
+                    $("#num-to-people-" + i + " .name").append("<a id=\"user" + value.id + "\">" + value.owner + "<\/a>");
+
+
+                    //Birinci Çinko Bildirim
+                    if (value.is_birinci_cinko) {
+                        $(".winner-card #cardID" + value.id).remove();
+
+                        $("#num-to-people-" + i + " .num").addClass("win");
+                        $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
+                        $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
+
+                        $(".winner-card .winner-name#" + value.id).text(value.owner + " Birinci Çinko! Tebrikler");
+                        $(".winner-card .winner-name#" + value.id).addClass("birinci-cinko");
+
+
+                    } else if (value.is_ikinci_cinko) {
+                        $(".winner-card #cardID" + value.id).remove();
+
+                        $("#num-to-people-" + i + " .num").addClass("win2");
+                        $("#num-to-people-" + i + " .name #user" + value.id).addClass("win2");
+                        $(".winner-card ul#user" + value.id).css("display", "none");
+                        $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler"), "ikinci-cinko");
+
+                        $(".winner-card .winner-name#" + value.id).text(value.owner + " ikinci Çinko! Tebrikler");
+                        $(".winner-card .winner-name#" + value.id).addClass("ikinci-cinko");
+
+                    } else if (value.is_tombala) {
+                        $(".winner-card #cardID" + value.id).remove();
+
+                        $("#num-to-people-" + i + " .num").addClass("win-bingo");
+                        $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
+                        $(".winner-card ul#user" + value.id).css("display", "none");
+                        $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler"), "tombala");
+
+                        $(".winner-card .winner-name#" + value.id).text(value.owner + "Tombala! Tebrikler");
+                        $(".winner-card .winner-name#" + value.id).addClass("tombala");
+
+
+                    } else {
+                       
+
+                    }
+
+                });
+            }
+
+            $("#loader_form").removeClass("show"); //Loading
+
+         },
+
         setData: function () {
             var t0 = performance.now();
             $("#loader_form").addClass("show"); //Loading
 
             V.ajaxRequest(V.gameStatus, 'GET')
                 .then((response) => {
-                    let data = response;
-                    V.objGame = response;
-                    $("#post-picked-numbers .round input").removeAttr("checked");
-                    $("input").removeAttr("disabled")
-                    // Seçilen Numaralar Disabled Yapılıyor
-                    $(eval(data.picked_numbers)).each(function (index, value) {
-                        $("#num" + value).prop('disabled', true);
-                    });
-                    $(data.last_three_moves).each(function (index, value) {
-                        $(".last-number .number" + index).text(value);
-                    });
-                    //Game Text
-                    $("#gameText").text(response.game_text);
-                    //Change Logo
-                    $(".sirket-logo .logo").html(' <img id="companyLogo" src="' + url + data.logo + '" alt="">')
-                    //Background Color 
-                    $("body").addClass(response.background_color);
+                 
+                    V.bingo.gameStatus(response);
 
-                    //Change BG
-                    $('#background_color').change(function () {
-                        $("body").removeClass();
-                        $("body").addClass($(this).val());
-                    });
-
-                    //Random Button Show
-                    $("input[name='random_token_select']").attr('checked', response.random_token_select)
-
-                    //Random Button Display 
-                    if (response.random_token_select == true) {
-                        $("#random-isaretle").removeClass("d-none");
-                        $("#isaretle").addClass("d-none");
-                        $("#number-select").addClass("click-block");
-                        $(".round input[type=checkbox]").prop('checked', false);
-                    } else {
-                        $("#random-isaretle").addClass("d-none");
-                        $("#isaretle").removeClass("d-none");
-                        $("#number-select").removeClass("click-block");
-                    }
-
-                    $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
-                    $(".wrap .num").removeClass("win win2 win-bingo");
-                    $(".wrap .name a").removeClass("win win2 win-bingo");
-                    confetti.stop();
-
-                    //Puan Tablosu Ad ve Kişi Sayısı Hesaplanan Veriler
-                    for (var i = 0; i < Object.keys(data.leader_boards).length; i++) {
-                        $(data.leader_boards[i]).each(function (index, value) {
-
-                            var countPeople = Object.keys(data.leader_boards[i]).length;
-                            $("#num-to-people-" + i + " .count").text(countPeople + " Kişi");
-                            $("#num-to-people-" + i + " .name").append("<a id=\"user" + value.id + "\">" + value.owner + "<\/a>");
-
-
-                            //Birinci Çinko Bildirim
-                            if (value.is_birinci_cinko) {
-                                $("ul#user" + value.id).remove();
-                                $("p#user" + value.id).remove();
-
-                                $("#num-to-people-" + i + " .num").addClass("win");
-                                $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
-                                $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
-
-                                $(".winner-card .winner-name#" + value.id).text(value.owner + " Birinci Çinko! Tebrikler");
-                                $(".winner-card .winner-name#" + value.id).addClass("birinci-cinko");
-
-
-                            } else if (value.is_ikinci_cinko) {
-                                $("ul#user" + value.id).remove();
-                                $("p#user" + value.id).remove();
-
-                                $("#num-to-people-" + i + " .num").addClass("win2");
-                                $("#num-to-people-" + i + " .name #user" + value.id).addClass("win2");
-                                $(".winner-card ul#user" + value.id).css("display", "none");
-                                $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler"), "ikinci-cinko");
-
-                                $(".winner-card .winner-name#" + value.id).text(value.owner + " ikinci Çinko! Tebrikler");
-                                $(".winner-card .winner-name#" + value.id).addClass("ikinci-cinko");
-
-                            } else if (value.is_tombala) {
-                                $("ul#user" + value.id).remove();
-                                $("p#user" + value.id).remove();
-
-                                $("#num-to-people-" + i + " .num").addClass("win-bingo");
-                                $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
-                                $(".winner-card ul#user" + value.id).css("display", "none");
-                                $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler"), "tombala");
-
-                                $(".winner-card .winner-name#" + value.id).text(value.owner + "Tombala! Tebrikler");
-                                $(".winner-card .winner-name#" + value.id).addClass("tombala");
-
-
-                            } else {
-                                $("ul#user" + value.id).remove();
-                                $("p#user" + value.id).remove();
-
-                                $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner, "userID" + value.id));
-
-                            }
-
-                        });
-                    }
-
-                    $("#loader_form").removeClass("show"); //Loading
                 })
                 .catch((error) => {
                     console.log("V.bingo.Setdata() - error get")
@@ -444,7 +447,8 @@ V = {
         },
         clickBingo: function () {
             $("#isaretle, #random-isaretle").click(function () {
-                $("#loader_form").addClass("show"); //Loading
+              
+                confetti.stop();
                 var selectNumber = 0;
                 selectNumber = $('.picked:checked').val();
                 let obj;
@@ -476,7 +480,7 @@ V = {
                                 $(".round").removeClass("last-number-effect animate__animated animate__heartBeat animate__slower");
                                 $("#roundid" + value).addClass("last-number-effect animate__animated animate__heartBeat animate__slower");
                                 $("#roundid" + value + " input").prop('checked',false)
-                                console.log("#roundid" + value)
+                                //console.log("#roundid" + value)
                             }
                             $(".last-number .number" + index).text(value);
                         });
@@ -503,52 +507,43 @@ V = {
 
                                 //Birinci Çinko Bildirim
                                 if (value.is_birinci_cinko) {
-                                    $("ul#user" + value.id).remove();
-                                    $("p#user" + value.id).remove();
+                                    $(".winner-card #cardID" + value.id).remove();
 
                                     $("#num-to-people-" + i + " .num").addClass("win");
                                     $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
 
-
-                                    $(".winner-card .winner-name#" + value.id).text(value.owner + " Birinci Çinko! Tebrikler");
-                                    $(".winner-card .winner-name#" + value.id).addClass("birinci-cinko");
                                     confetti.start();
+                                    V.winAudio.play();
 
 
 
                                 } else if (value.is_ikinci_cinko) {
-                                    $("ul#user" + value.id).remove();
-                                    $("p#user" + value.id).remove();
+                                    $(".winner-card #cardID" + value.id).remove();
 
                                     $("#num-to-people-" + i + " .num").addClass("win2");
                                     $("#num-to-people-" + i + " .name #user" + value.id).addClass("win2");
 
-
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler", "ikinci-cinko"));
 
-                                    $(".winner-card .winner-name#" + value.id).text(value.owner + " ikinci Çinko! Tebrikler");
-                                    $(".winner-card .winner-name#" + value.id).addClass("ikinci-cinko");
-
                                     confetti.start();
+                                    V.winAudio.play();
 
 
 
                                 } else if (value.is_tombala) {
-                                    $("ul#user" + value.id).remove();
-                                    $("p#user" + value.id).remove();
+                                    $(".winner-card #cardID" + value.id).remove();
 
                                     $("#num-to-people-" + i + " .num").addClass("win-bingo");
                                     $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
                                     $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler", "tombala"));
 
-                                    $(".winner-card .winner-name#" + value.id).text(value.owner + "Tombala! Tebrikler");
-                                    $(".winner-card .winner-name#" + value.id).addClass("tombala");
-
                                     confetti.start();
+                                    V.winAudio.play();
+
                                 } else {
-                                    $("ul#user" + value.id).remove();
-                                    $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner, "userID" + value.id));
+                                   // $("ul#user" + value.id).remove();
+                                   // $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner, "userID" + value.id));
 
                                 }
 
@@ -560,14 +555,12 @@ V = {
                         console.log("V.bingo.clickBingo() - post error")
                         console.log(error)
                     });
-                $("#loader_form").removeClass("show"); //Loading
 
             });
 
 
         },
         moveBack: function () {
-
             $("#go-back").click(function () {
                 $("#loader_form").addClass("show"); //Loading
                 V.ajaxRequest(V.cancelMove, 'DELETE')
@@ -583,7 +576,8 @@ V = {
                         $(".wrap .name a").removeClass("win win2 win-bingo");
                         $(".winner-card").empty();
                         $("#loader_form").removeClass("show"); //Loading
-                        V.bingo.setData();
+                      
+                        V.bingo.gameStatus(response);
 
                     })
                     .catch((error) => {
@@ -598,7 +592,7 @@ V = {
             return returnColumn;
         },
         createCard: function (cardID, cardColor, winnerText, cinkoNo) {
-            let content = "<p style=\"display:none\" id=\"user" + cardID + "\" class=\"winner-name " + cinkoNo + "\">" + winnerText + "<\/p>\r\n<ul id=\"user" + cardID + "\" class=\"" + cinkoNo + " t-card " + cardColor + "\">\r\n<li id=\"column1\">\r\n<div id=\"A1\"><\/div>\r\n<div id=\"B1\"><\/div>\r\n<div id=\"C1\"><\/div>\r\n<\/li>\r\n<li id=\"column2\">\r\n<div id=\"A2\"><\/div>\r\n<div id=\"B2\"><\/div>\r\n<div id=\"C2\"><\/div>\r\n<\/li>\r\n<li id=\"column3\">\r\n<div id=\"A3\"><\/div>\r\n<div id=\"B3\"><\/div>\r\n<div id=\"C3\"><\/div>\r\n<\/li>\r\n<li id=\"column4\">\r\n<div id=\"A4\"><\/div>\r\n<div id=\"B4\"><\/div>\r\n<div id=\"C4\"><\/div>\r\n<\/li>\r\n<li id=\"column5\">\r\n<div id=\"A5\"><\/div>\r\n<div id=\"B5\"><\/div>\r\n<div id=\"C5\"><\/div>\r\n<\/li>\r\n<li id=\"column6\">\r\n<div id=\"A6\"><\/div>\r\n<div id=\"B6\"><\/div>\r\n<div id=\"C6\"><\/div>\r\n<\/li>\r\n<li id=\"column7\">\r\n<div id=\"A7\"><\/div>\r\n<div id=\"B7\"><\/div>\r\n<div id=\"C7\"><\/div>\r\n<\/li>\r\n<li id=\"column8\">\r\n<div id=\"A8\"><\/div>\r\n<div id=\"B8\"><\/div>\r\n<div id=\"C8\"><\/div>\r\n<\/li>\r\n<li id=\"column9\">\r\n<div id=\"A9\"><\/div>\r\n<div id=\"B9\"><\/div>\r\n<div id=\"C9\"><\/div>\r\n<\/li>\r\n<\/ul> <div style=\"display:none\" id=\"deleteuser" + cardID + "\" class=\"person-delete\"> <a id=\"person-delete\" userid=\"" + cardID + "\"  class=\"btn-main\"> Kişiyi Sil<\/a> <\/div>";
+            let content = "<div id=\"cardID" + cardID + "\" class=\"newCard\"><p id=\"user" + cardID + "\" class=\"winner-name " + cinkoNo + "\">" + winnerText + "<\/p>\r\n<ul id=\"user" + cardID + "\" class=\"" + cinkoNo + " t-card " + cardColor + "\">\r\n<li id=\"column1\">\r\n<div id=\"A1\"><\/div>\r\n<div id=\"B1\"><\/div>\r\n<div id=\"C1\"><\/div>\r\n<\/li>\r\n<li id=\"column2\">\r\n<div id=\"A2\"><\/div>\r\n<div id=\"B2\"><\/div>\r\n<div id=\"C2\"><\/div>\r\n<\/li>\r\n<li id=\"column3\">\r\n<div id=\"A3\"><\/div>\r\n<div id=\"B3\"><\/div>\r\n<div id=\"C3\"><\/div>\r\n<\/li>\r\n<li id=\"column4\">\r\n<div id=\"A4\"><\/div>\r\n<div id=\"B4\"><\/div>\r\n<div id=\"C4\"><\/div>\r\n<\/li>\r\n<li id=\"column5\">\r\n<div id=\"A5\"><\/div>\r\n<div id=\"B5\"><\/div>\r\n<div id=\"C5\"><\/div>\r\n<\/li>\r\n<li id=\"column6\">\r\n<div id=\"A6\"><\/div>\r\n<div id=\"B6\"><\/div>\r\n<div id=\"C6\"><\/div>\r\n<\/li>\r\n<li id=\"column7\">\r\n<div id=\"A7\"><\/div>\r\n<div id=\"B7\"><\/div>\r\n<div id=\"C7\"><\/div>\r\n<\/li>\r\n<li id=\"column8\">\r\n<div id=\"A8\"><\/div>\r\n<div id=\"B8\"><\/div>\r\n<div id=\"C8\"><\/div>\r\n<\/li>\r\n<li id=\"column9\">\r\n<div id=\"A9\"><\/div>\r\n<div id=\"B9\"><\/div>\r\n<div id=\"C9\"><\/div>\r\n<\/li>\r\n<\/ul>  <a id=\"person-delete\" userid=\"" + cardID + "\"  class=\"btn-main\"> Kişiyi Sil<\/a> <\/div>";
 
             return content;
         },
@@ -629,7 +623,7 @@ V = {
                     deleteid = $(this).attr('userid');
 
                     V.ajaxRequest(V.deleteCard + deleteid + "/", "DELETE")
-                        .then((response) => {
+                        .then(() => {
                             $("#loader_form").addClass("show"); //Loading
                             $(".wrap .count").empty();
                             $(".wrap .name").empty();
@@ -650,9 +644,11 @@ V = {
 
                             $(".game-screen").css("display", "block");
                             $(".game-screen").addClass("animate__animated animate__fadeIn");
-                            V.bingo.setData();
+                         
+                            //setData-deletePerson
 
-                            $("#loader_form").removeClass("show"); //Loading
+                            V.bingo.gameStatus(response);
+                            
                         })
                         .catch((error) => {
                             console.log("V.bingo.Setdata() - error get")
@@ -750,7 +746,6 @@ V = {
 
         }
 
-
     },
 
     admin: {
@@ -798,9 +793,10 @@ V = {
 
                 V.ajaxRequest(V.adminGameData, "GET", null, false)
                     .then((response) => {
-
-                        $("input[name='game_text']").val(response.game_text);
-                        $("input[name='register_text']").val(response.register_text);
+                        console.log(response)
+                      
+                        $("textarea[name='game_text']").val(response.game_text);
+                        $("textarea[name='register_text']").val(response.register_text);
                         $("input[name='webinar_link']").val(response.webinar_link);
                         $("input[name='disp_webinar_link_dt']").val(V.admin.combDate(response.disp_webinar_link_dt));
                         $("input[name='start_datetime']").val(V.admin.combDate(response.start_datetime));

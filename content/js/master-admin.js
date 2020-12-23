@@ -162,7 +162,9 @@ V = {
                     data: data,
                     success: V.AuthToken.addAuthTokenCookie,
                     dataType: "JSON",
-                    async: false
+                    async: false,
+                    error:function () { 
+                     }
                 });
             }
 
@@ -329,9 +331,11 @@ V = {
             })
             .catch((error) => {
                console.log("listGame - Error - Get")
+               alert("Giriş yaptığınız kullanıcının yönetici yetkisi yoktur.");
+               window.location.replace("/admin-login.html");
             });
 
-            
+           
          }
 
     },

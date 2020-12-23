@@ -1151,3 +1151,7 @@ button:focus {
 #admin #sec1{
     min-height: 100vh;
 }
+
+#person-delete{
+    width: 30%;
+}
