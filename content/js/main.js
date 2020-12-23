@@ -19,9 +19,9 @@ V = {
     cardColor: "",
     cardID: "",
     winnerText: "",
-    isBirinciCinko: "",
-    isIkinciCinko: "",
-    isTombala: "",
+    isBirinciCinko: false,
+    isIkinciCinko: false,
+    isTombala: false,
     gameID: "",
     gameOwner: "",
     objGame: "",
@@ -366,47 +366,6 @@ V = {
                     $("#num-to-people-" + i + " .count").text(countPeople + " Kişi");
                     $("#num-to-people-" + i + " .name").append("<a id=\"user" + value.id + "\">" + value.owner + "<\/a>");
 
-
-                    //Birinci Çinko Bildirim
-                    if (value.is_birinci_cinko) {
-                        $(".winner-card #cardID" + value.id).remove();
-
-                        $("#num-to-people-" + i + " .num").addClass("win");
-                        $("#num-to-people-" + i + " .name #user" + value.id).addClass("win");
-                        $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Birinci Çinko! Tebrikler", "birinci-cinko"));
-
-                        $(".winner-card .winner-name#" + value.id).text(value.owner + " Birinci Çinko! Tebrikler");
-                        $(".winner-card .winner-name#" + value.id).addClass("birinci-cinko");
-
-
-                    } else if (value.is_ikinci_cinko) {
-                        $(".winner-card #cardID" + value.id).remove();
-
-                        $("#num-to-people-" + i + " .num").addClass("win2");
-                        $("#num-to-people-" + i + " .name #user" + value.id).addClass("win2");
-                        $(".winner-card ul#user" + value.id).css("display", "none");
-                        $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " ikinci Çinko! Tebrikler"), "ikinci-cinko");
-
-                        $(".winner-card .winner-name#" + value.id).text(value.owner + " ikinci Çinko! Tebrikler");
-                        $(".winner-card .winner-name#" + value.id).addClass("ikinci-cinko");
-
-                    } else if (value.is_tombala) {
-                        $(".winner-card #cardID" + value.id).remove();
-
-                        $("#num-to-people-" + i + " .num").addClass("win-bingo");
-                        $("#num-to-people-" + i + " .name #user" + value.id).addClass("win-bingo");
-                        $(".winner-card ul#user" + value.id).css("display", "none");
-                        $(".winner-card").append(V.bingo.createCard(value.id, value.color, value.owner + " Tombala! Tebrikler"), "tombala");
-
-                        $(".winner-card .winner-name#" + value.id).text(value.owner + "Tombala! Tebrikler");
-                        $(".winner-card .winner-name#" + value.id).addClass("tombala");
-
-
-                    } else {
-                       
-
-                    }
-
                 });
             }
 
@@ -507,6 +466,7 @@ V = {
 
                                 //Birinci Çinko Bildirim
                                 if (value.is_birinci_cinko) {
+                                    V.isBirinciCinko = true;
                                     $(".winner-card #cardID" + value.id).remove();
 
                                     $("#num-to-people-" + i + " .num").addClass("win");
@@ -519,6 +479,7 @@ V = {
 
 
                                 } else if (value.is_ikinci_cinko) {
+                                    V.isIkinciCinko = true;
                                     $(".winner-card #cardID" + value.id).remove();
 
                                     $("#num-to-people-" + i + " .num").addClass("win2");
@@ -532,6 +493,7 @@ V = {
 
 
                                 } else if (value.is_tombala) {
+                                    V.isTombala = true;
                                     $(".winner-card #cardID" + value.id).remove();
 
                                     $("#num-to-people-" + i + " .num").addClass("win-bingo");
@@ -676,6 +638,10 @@ V = {
                     V.ajaxRequest(V.resetGameUrl, "DELETE")
                         .then((response) => {
 
+                            V.isBirinciCinko = false;
+                            V.isIkinciCinko = false;
+                            V.isTombala = false;
+
                             $(".wrap .count").empty();
                             $(".wrap .name").empty();
                             if ($(".wrap .count").text() == "") {
@@ -697,7 +663,7 @@ V = {
 
                             $(".last-number .num").text("-");
 
-                            V.bingo.setData();
+                            V.bingo.gameStatus(response);
                         })
                         .catch((error) => {
                             console.log("V.bingo.resetGame() - error delete")
@@ -826,8 +792,9 @@ V = {
                     checkBox = false;
                 }
                 formData.append('random_token_select', checkBox);
-
-
+                formData.append('is_birinci_cinko', V.isBirinciCinko);
+                formData.append('is_ikinci_cinko', V.isIkinciCinko);
+                formData.append('is_tombalayi', V.isTombala);
 
                 // formData.append('background_color', );
                 // console.log($('select[name=background_color] option').filter(':selected').val())
@@ -842,7 +809,6 @@ V = {
                     success: function (data) {
 
                         alert("Başarıyla kaydedildi.");
-                        // location.reload();
                         console.log(data)
                         location.reload();
 
