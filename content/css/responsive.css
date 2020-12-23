@@ -27,14 +27,30 @@
     .notification .numbers .wrap {
         margin-bottom: 10px;
     }
+    .round {
+        width: 45px;
+        height: 45px;
+        margin: 1% 1.5%;
+    }
+    .round label {
+        width: 41px;
+        height: 41px;
+    }
+    #games-data {
+        padding-top: 0px;
+    }
+    .form-group {
+        margin-bottom: 0.6rem;
+    }
 }
 
 /* (1440x900) WXGA+ Display - MacBook */
 
 @media (max-width: 1440px) {
-    .round{
-        margin: 1% 1%;
+    .notification .numbers .wrap {
+        margin-bottom: 10px;
     }
+
 }
 
 
@@ -61,13 +77,56 @@
         padding: 5px;
         font-size:10px;
     }
+    .notification .numbers {
+        overflow-y: auto;
+    }
+    #games-data textarea{
+        height:50px;
+    }
+    .form-group {
+        margin-bottom: 0.3rem;
+    }
 }
 
 
 /* (1280x1024) SXGA Display */
 
 @media (max-width: 1280px) {
- 
+    .round {
+        width: 30px;
+        height: 30px;
+        margin: 1% 1.8%;
+    }
+    .round label {
+        width: 26px;
+        height: 26px;
+        font-size:12px;
+    }
+    .form-group {
+        margin-bottom: 0;
+    }
+    .form-control {
+        height: 25px;
+        font-size: 12px;
+    }
+    #games-data {
+        padding-top: 10px;
+    }
+    .last-number .title {
+        font-size: 18px;
+    }
+    .last-number .number0 {
+        font-size: 38px;
+    }
+    .last-number .number1 {
+        font-size: 22px;
+    }
+    .last-number .number2 {
+        font-size:22px;
+    }
+    .btn-main {
+        padding: 10px 10px;
+    }
 }
 
 @media (width: 1024px) {
