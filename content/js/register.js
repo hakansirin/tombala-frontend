@@ -210,7 +210,7 @@ V = {
                 e.preventDefault();
                 var formData = new FormData(this);
 
-                getEmail = $("input#email").val();
+                getEmail = "";
                 getName = $("input#name").val();
                 getSurname = $("input#surname").val();
 
