@@ -548,8 +548,12 @@ V = {
 
         countdown: function (year, month, day, hour, minute, second) {
             // Set Launch Date (ms)
-
-            const launchDate = new Date(year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second).getTime();
+            //console.log( year, month, day, hour, minute, second)
+            d2= new Date(year,  parseInt(month)-1, day, hour, minute, second);
+            //d1= new Date(year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second)
+            //dn= new Date()
+            //console.log(d1, d2, dn)
+            const launchDate = d2.getTime();
             const tnow = new Date().getTime();
 
             // Context object
