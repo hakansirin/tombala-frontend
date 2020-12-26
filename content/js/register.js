@@ -549,7 +549,7 @@ V = {
         countdown: function (year, month, day, hour, minute, second) {
             // Set Launch Date (ms)
 
-            const launchDate = new Date(year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second).getTime();
+            const launchDate = new Date(year + "-" + month + "-" + day + "T" + hour + ":" + minute + ":" + second).getTime();
             const tnow = new Date().getTime();
 
             // Context object

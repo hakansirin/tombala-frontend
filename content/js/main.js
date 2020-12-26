@@ -585,7 +585,7 @@ V = {
                     deleteid = $(this).attr('userid');
 
                     V.ajaxRequest(V.deleteCard + deleteid + "/", "DELETE")
-                        .then(() => {
+                        .then((response) => {
                             $("#loader_form").addClass("show"); //Loading
                             $(".wrap .count").empty();
                             $(".wrap .name").empty();
@@ -608,15 +608,14 @@ V = {
                             $(".game-screen").addClass("animate__animated animate__fadeIn");
                          
                             //setData-deletePerson
-
                             V.bingo.gameStatus(response);
                             
                         })
                         .catch((error) => {
                             console.log("V.bingo.Setdata() - error get")
                             console.log(error)
-
                         });
+                        
                 }
 
 
